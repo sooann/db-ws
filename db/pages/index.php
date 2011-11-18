@@ -14,7 +14,7 @@
 	
 ?>
 
-	<h1>Testing Main Content Area</h1>
+	Testing Main Content Area
 
 <?php 
 

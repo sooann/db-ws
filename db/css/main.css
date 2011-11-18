@@ -35,166 +35,20 @@ input, select, button {
   font-weight: bold;
   cursor:pointer;
 }
-.headerrow1 {
-	background-image: url(../images/headerbg.gif);
-	background-repeat: repeat-x;
-	background-color:#ffffff;
-}
-.headerhref {
-	font-weight: bold;
-	color: #222222;
-}
-.headerhreftd {
-	padding-bottom: 15px;
-	padding-left: 0px;
-}
-.headerhref:hover {
-	font-weight: bold;
-	color: #FF0000;
-	text-decoration: none;
-}
-.menuitem {
-	background-repeat: repeat-x;
-	padding-bottom: 5px;
-}
-.menuhref {
-	font-size: 11px;
-	color: #f5f5f5;
-	font-weight: bold;
-	text-decoration: none;
-}
-
-.menuhref:hover {
-	font-size: 11px;
-	color: #FF0000;
-	font-weight: bold;
-	text-decoration: none;
-}
-.leftnavitable {
-	margin-top:6px;
-	margin-left:10px;
-	margin-right:10px;
-}
-
-.MenuBorderSelected {
-	background-repeat: no-repeat;
-	background-position: 0.5px;
-	height: 15px;
-	width: 20px;	
-	-webkit-border-radius: 3px 0px 0px 3px;
-	-moz-border-radius: 3px 0px 0px 3px;
-	border-radius: 3px 0px 0px 3px;
-	
-}
-
-.MenuBorderSelected2 {
-	height: 15px;
-	width: 13px;
-	-webkit-border-radius: 0px 8px 3px 0px;
-	-moz-border-radius: 0px 8px 3px 0px;
-	border-radius: 0px 8px 3px 0px;
-}
-
-.leftnaviitemrow {
-	background-color: #e5e5e5;
-}
-.leftmenubg {
-	background-color: #e5e5e5;
-	border-right-width: 1px;
-	border-right-style: solid;
-	border-right-color: #999999;
-}
-.leftnavitop {
-	background-color: #FFFFFF;
-	color: #303030;
-	font-weight: bold;
-}
-
-.leftnaviitem {
-	border-bottom-width: 1px;
-	border-bottom-style: solid;
-	border-bottom-color: #CCCCCC;
-}
-.contentarea {
-	padding-top: 8px;
-	padding-right: 10px;
-	padding-bottom: 5px;
-	padding-left: 10px;
-}
-.tablerowitem:hover{
-	background-color: #E8F1FF;
-}
-
-.tableRowWhite td {
-	border-top-width: 1px;
-	border-top-style: solid;
-	border-top-color: #CCCCCC;
-	padding-top: 1px;
-	padding-bottom: 1px;
-}
-.rowselect {
-	background-color: #FBFEC2;
-}
-.endformcell {
-	background-color: #E8E8E8;
-	padding: 5px;
-}
-.default:hover {
-	color: #FF0000;
-}
-.cellcolor {
-	background-color:#F7F7F7;
-}
-.cellcolor:hover {
-	background-color:#E8F1FF;
-}
-
-.subtable td {
-	border-top-width: 1px;
-	border-top-style: solid;
-	border-top-color: #CCCCCC;
-	padding-top: 3px;
-	padding-bottom: 3px;
-}
-.errorText {
-	color:#ff0000;
-	font-weight:bold;
-}
-
-.subtableclear td {
-	border-top-width: 0px;
-	padding-top: 0px;
-	padding-bottom: 0px;
-}
-
-.searchcellcolor {
-	background-color:#FFE2D5;
-	cursor:pointer;
-}
-.searchcellcolor:hover {
-	background-color:#D5FFED;
-	color:#ff0000;
-}
-.searchcellcolor_20110505bryan:hover {
-	background-color:#D5FFED;
-	font-weight:bold;
-	color:#ff0000;
-}
-
-.searchresulttable {
-	border: 1px solid #CCCCCC;
-}
-
-.searchresulttable td {
-	border: 1px solid #CCCCCC;
-}
-
-.mandatory {
-	color:#ff0000;
-	font-weight:bold;
-}
 
 #mainfooterarea {
 	border-top: 1px solid #999999;
 }
 
+#tdLeftNaviTable {
+	background-color: #DDDDDD;
+}
+
+#pagetitle {
+	font-size:20px;
+	font-weight:bold;
+}
+
+#headerrow1cell1 {
+	padding-left:10px;
+}

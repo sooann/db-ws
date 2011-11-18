@@ -193,7 +193,10 @@ class wArLeY_DBMS{
 		if($this->con!=null){
 			try {
 				$this->sql=$sql_statement;
-				return $this->con->query($this->sql);
+				$stmt = $this->con->prepare($this->sql);
+				$stmt->execute();
+				return $stmt; 
+				//return $this->con->query();
 			} catch(PDOException $e) {				
 				return false;
 			}

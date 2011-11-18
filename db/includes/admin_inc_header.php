@@ -1,4 +1,12 @@
-
+<?php 	
+	if (isset($WebpageTrackingID)) {
+		$node = new sqlNode();
+		$node->table = "webpagetracking";
+		$node->push("date","SCRIPTLOAD",now());
+		$node->where = "webtracking_id = " . $WebpageTrackingID;
+		$db->update($node);
+	}
+?>	
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
@@ -34,24 +42,14 @@
 							<td colspan="3" id="maincontentrow1">
 								<table width="100%" border="0" cellspacing="0" cellpadding="0" id="headercontentarea" >
 									<tr id="headerrow1">
-										<td valign="bottom" width="280" align="center" height="60" id="headerrow1cell1" ><img src="../images/logo2.jpg" width="213" height="46" /></td>
-										<td valign="bottom" class="headerrow1cell2" align="right">
-											<b>Logged in as: <?php echo $_SESSION['strUserName'] ?></b>&nbsp;&nbsp;|
-											&nbsp;&nbsp;<a href="../pages/logout.php" class="headerhref" >Logout</a>
+										<td valign="middle" align="left" height="60" id="headerrow1cell1" >
+											<h1>CRM Database Administrator</h1>
 										</td>
-									</tr>
-									<tr id="headerrow2" height="29" bgcolor="#ffffff" >
-										<td colspan="headerrow2cell1" valign="bottom" nowrap >
-											<table cellspacing="0" cellpadding="0" border="0" id="topmenu" >
-												<tr>
-													<td>
-													</td>
-												</tr>
-											</table>
+										<td valign="bottom" id="headerrow1cell2" align="right">
 										</td>
 									</tr>
 									<tr>
-										<td colspan="3" id="headerdivider" ></td>
+										<td colspan="3" id="headerdivider" style="border-bottom:1px solid #999999" ></td>
 									</tr>
 								</table>
 							</td>
@@ -63,26 +61,45 @@
 				<td>
 					<table width="100%" border="0" cellspacing="0" cellpadding="0" id="maincontentarea" >
 						<tr height="400">
-							<td width="180" class="leftmenubg" align="center" valign="top" id="tdLeftNaviTable">
-								<table width="180" cellpadding="4" cellspacing="0" border="0" ud="leftnavitable">
+							<td width="180" align="center" valign="top" id="tdLeftNaviTable">
+								<table width="180" cellpadding="4" cellspacing="0" border="0" id="leftnavitable">
 									<tr>
 										<td>
-											<br />
+											<b>Logged in as: <?php echo $_SESSION['strUserName'] ?></b><br/><br/>
+											<a href="../pages/logout.php" >Click here to Logout</a>
+										</td>
+									</tr>
+									<tr>
+										<td>
 											<b>Database:</b>
-											<select name="selDatabase" id="selDatabase">
+											<?php
+												$stmt = $db->query("select * from DATABASES");
+											?>
+											<select name="selDatabase" id="selDatabase" onchange="" >
 												<option value="">Please Select Database</option>
-												
+												<option value="showAll">&lt;&lt;Show All&gt;&gt;</Show></option>
+												<?php
+													while ($row = $stmt->fetch()) {
+														echo ('<option value="'.$row["DATABASE_ID"].'" ');
+														if ($_SESSION["showDATABASE_ID"] == $row["DATABASE_ID"] ) {
+															echo "selected";
+														}
+														echo " >".$row["LABEL"]." (".$row["NAME"].")</option>";
+													} 
+												?>	
 											</select>
 										</td>
 									</tr>
+									<tr>
+										<td><a href="users.php" >Manage Users</a></td>
+									</tr>
 								</table>
-
 							</td>
 							<td id="contentarea" valign="top" height="400">
-								<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+								<table width="100%" border="0" cellspacing="0" cellpadding="4" >
 									<tr><td><i><b>You are in: </b></i> <b><?php echo $BodyTitle; ?></b></td></tr>
 									<tr><td height=5"></td></tr>
-									<tr><td><span class="pagetitle"><?php echo $BodyTitle; ?></span></td></tr>
+									<tr><td><span id="pagetitle"><?php echo $BodyTitle; ?></span></td></tr>
 									<tr><td><?php echo $PageDescription; ?></td></tr>
 									<tr><td height="8"></td></tr>
 									<tr>
