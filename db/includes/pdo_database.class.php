@@ -189,10 +189,19 @@ class wArLeY_DBMS{
 	}	
 		
 	//Iterate over rows
-	function query($sql_statement){		
+	function query($sql_statement, $orderby = null, $limit = null, $offset = 0){		
 		if($this->con!=null){
 			try {
-				$this->sql=$sql_statement;
+				if ($orderby!=null && $limit!=null && $offset!=null) {
+					if($dbtype=="sqlsrv"||$dbtype="mssql"){
+						$sql_statement = "select row_number() over (order by ".$orderby."), rownumber, * from (".$sql_statement.") as table1 where rownumber between $offset and ".($offset+$limit);
+					}
+					if($dbtype=="mysql"){
+						$sql_statement = $sql_statement . " Order By ".$orderby." limit ".$offset.",".$limit;
+					}
+				} else {
+					$this->sql=$sql_statement;
+				}
 				$stmt = $this->con->prepare($this->sql);
 				$stmt->execute();
 				return $stmt; 
