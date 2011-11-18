@@ -11,8 +11,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<title><?php echo $PageTitle; ?> - <?php echo $ServerName; ?></title>
-		<?php echo $headtags; ?>
+		<title><?php echo $strPageTitle; ?> - <?php echo $strServerName; ?></title>
+		<?php echo $strHeadTags; ?>
 		<link href="../css/main.css" rel="stylesheet" type="text/css" />
 		<script language="javascript" src="../js/cordlife.js"></script>
 		<script language="javascript" src="../js/cookie.js"></script>
@@ -23,9 +23,9 @@
 				
 				<?php echo $evtBodyonload; ?>
 				
-				<?php if (isset($WebpageTrackingID)) { ?>
+				<?php if (isset($intWebpageTrackingID)) { ?>
 
-					doAJAX("../data/loaddata.php?id=<?php echo $WebpageTrackingID; ?>", "");
+					doAJAX("../data/loaddata.php?id=<?php echo $intWebpageTrackingID; ?>", "");
 					
 				<?php } ?>
 		  }
@@ -97,10 +97,10 @@
 							</td>
 							<td id="contentarea" valign="top" height="400">
 								<table width="100%" border="0" cellspacing="0" cellpadding="4" >
-									<tr><td><i><b>You are in: </b></i> <b><?php echo $BodyTitle; ?></b></td></tr>
+									<tr><td><i><b>You are in: </b></i> <b><?php echo $strBodyTitle; ?></b></td></tr>
 									<tr><td height=5"></td></tr>
-									<tr><td><span id="pagetitle"><?php echo $BodyTitle; ?></span></td></tr>
-									<tr><td><?php echo $PageDescription; ?></td></tr>
+									<tr><td><span id="pagetitle"><?php echo $strBodyTitle; ?></span></td></tr>
+									<tr><td><?php echo $strPageDescription; ?></td></tr>
 									<tr><td height="8"></td></tr>
 									<tr>
 										<td>

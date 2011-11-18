@@ -11,7 +11,7 @@
 	global $db;
 
 	//Global Variables
-	$ServerName= "DB Support System";
+	$strServerName= "DB Support System";
 
 	session_start();
 	session_cache_expire(30);
@@ -21,13 +21,13 @@
 	
 	date_default_timezone_set("Asia/Singapore");
 	
-	$PostScript = $_SERVER['SCRIPT_NAME'];
+	$strPostScript = $_SERVER['SCRIPT_NAME'];
 
 	//log webpage
 	$node = new sqlNode();
 	$node->table = "webpagetracking";
-	if (isset($UserURN)) {
-		$node->push("int","user_id",$UserURN);
+	if (isset($_SESSION["intUserURN"])) {
+		$node->push("int","user_id",$_SESSION["intUserURN"]);
 	}
 	$node->push("text","URL",$_SERVER['REQUEST_URI']);
 	$node->push("text","ScriptName",$_SERVER['SCRIPT_NAME']);
@@ -35,8 +35,8 @@
 	$node->push("text","Browser",$_SERVER['HTTP_USER_AGENT']);
 	$node->push("text","RequestMethod",$_SERVER['REQUEST_METHOD']);
 	$node->push("date","CreatedDate",now());
-	$WebpageTrackingID = $db->insert($node);
+	$intWebpageTrackingID = $db->insert($node);
 	
-	global $WebpageTrackingID;
+	global $intWebpageTrackingID;
 	
 ?>

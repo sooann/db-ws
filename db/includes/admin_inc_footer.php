@@ -20,11 +20,11 @@
 <?php 
 
 	//Log Web Load Time
-	if (isset($WebpageTrackingID)) {
+	if (isset($intWebpageTrackingID)) {
 		$node = new sqlNode();
 		$node->table = "webpagetracking";
 		$node->push("date","HTMLTRANSFERED",now());
-		$node->where = "webtracking_id = " . $WebpageTrackingID;
+		$node->where = "webtracking_id = " . $intWebpageTrackingID;
 		$db->update($node);
 	}
 	

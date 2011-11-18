@@ -3,11 +3,11 @@
 	require_once '../global.php';
 	require_once '../security_config.php';
 	
-	$PageTitle="Welcome";
-	$BodyTitle="Welcome";
-	$PageDescription="";
+	$strPageTitle="Welcome";
+	$strBodyTitle="Welcome";
+	$strPageDescription="";
 	
-	$headtags="";
+	$strHeadTags="";
 	$evtBodyonload="";
 	
 	require_once '../includes/admin_inc_header.php';

@@ -352,8 +352,8 @@ class wArLeY_DBMS{
 	
 	private function logSQL ($SQL_Statement, $RecordID) {		
 		$stmt = $this->con->prepare("insert into sqlaudit(user_id,SQLStatement,PageURL,RecordId,CreatedDate) values (?,?,?,?,?)");
-		if (isset($UserURN)) {
-			$stmt->bindParam(1, $UserURN);
+		if (isset($_SESSION["intUserURN"])) {
+			$stmt->bindParam(1, $_SESSION["intUserURN"]);
 		} else {
 			$stmt->bindValue(1, null, PDO::PARAM_NULL);
 		}

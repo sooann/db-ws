@@ -3,11 +3,11 @@
 	require_once "../global.php";
 	require_once "../includes/password.php";
 
-	$PageTitle="Admin Login";
-	$BodyTitle="Admin Login";
-	$PageDescription="";
+	$strPageTitle="Admin Login";
+	$strBodyTitle="Admin Login";
+	$strPageDescription="";
 	
-	$headtags="";
+	$strHeadTags="";
 	$evtBodyonload="";
 
 	$strUrl = Trim($_GET["url"]);
@@ -15,7 +15,7 @@
 		$strUrl = "";
 	}
 
-	$PostScript = $PostScript . "?url=" . URLEncode($strUrl);
+	$strPostScript = $strPostScript . "?url=" . URLEncode($strUrl);
 	
 	$strUsername="";
 	$strPassword="";
@@ -85,7 +85,7 @@
 
 	require_once '../includes/main_inc_header.php';
 ?>
-		<form method="post" action="<?php echo $PostScript; ?>">
+		<form method="post" action="<?php echo $strPostScript; ?>">
 			<table width="80%" border="1" align=center cellspacing="0" cellpadding="3" >
 				<tr>
               <td colspan="2" class="navheadgreen">Admin Login</td>
