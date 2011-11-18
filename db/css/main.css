@@ -193,3 +193,7 @@ input, select, button {
 	color:#ff0000;
 	font-weight:bold;
 }
+
+#mainfooterarea {
+	border-top: 1px solid #999999;
+}

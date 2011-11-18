@@ -7,7 +7,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td align="center" class="headerdivider"></td>
+				<td align="center" id="mainfooterarea"></td>
 			</tr>
 			<tr>
 				<td align="center" style="padding-top:4px;">
