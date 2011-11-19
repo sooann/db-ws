@@ -24,7 +24,7 @@
 	
 	$fldFilterName = array("Name","Email","Last Logged In", "Login Count","Created Date");
 	$fldFilterValue = array("NAME","EMAIL","dtlogindate", "intlogincount","CREATEDDATE");
-	$fldFilterDataType= array("text","text","date","int");
+	$fldFilterDataType= array("text","text","date","int","date");
 
 	// ##### Request QueryString Variables #####
 	$blnDeleted = trim($_GET['del']);
@@ -39,8 +39,8 @@
 	$intPageSize    = trim($_REQUEST["ps"]);
 	$strDeleteIds   = trim($_POST["strDeleteIds"]);
 	
-	$intFilterField = trim($_REQUEST["iff"]);
-	$strFilterValue = trim($_REQUEST["sfv"]);
+	$intFilterField = (trim($_REQUEST["iff"]) != "") ? trim($_REQUEST["iff"]) : trim($_REQUEST["intFilterField"]);  
+	$strFilterValue = (trim($_REQUEST["sfv"]) != "") ? trim($_REQUEST["sfv"]) : trim($_REQUEST["strFilterValue"]);
 
 	// ##### Process QueryString/Form Variables #####
 	If (!is_numeric($strSortField) || $strSortField == "") { $strSortField   = 0; }
@@ -162,9 +162,10 @@
 	
 	$paramArray=null;
 	
-	$SQLQuery = "select USERS.*, table1.intcount as intlogincount, table2.dtlogindate from USERS left join (select count(*) as intcount, user_id from loginlog group by user_id) as table1 on USERS.user_id = table1.user_id left outer join (select max(logindate) as dtlogindate,user_id from loginlog group by user_id ) as table2 on users.user_id = table2.user_id";
+	$SQLQuery = "select USERS.*, table1.intcount as intlogincount, table2.dtlogindate from USERS left join (select count(*) as intcount, user_id from loginlog group by user_id) as table1 on USERS.user_id = table1.user_id left outer join (select max(logindate) as dtlogindate,user_id from loginlog group by user_id ) as table2 on users.user_id = table2.user_id ";
 	
 	if ($strFilterValue!="") {
+		
 		$SQLQuery = "select * from (".$SQLQuery.") as table1 ";
 		
 		$strFilterDataType=strtolower($fldFilterDataType[$intFilterField]);
@@ -187,12 +188,10 @@
 			
 	}
 
-
-  $stmt = $db->query("SELECT count(*) as intcount FROM (".$SQLQuery.") as table1");
+  $stmt = $db->query("SELECT count(*) as intcount FROM (".$SQLQuery.") as table1",NULL,NULL,NULL,$paramArray);
   $row = $stmt->fetch(); 
   $numrows = $row["intcount"];
   
-	
   if ($numrows!=0) {
   
   	$intpagecount = ceil($numrows/$fldRecords[$intPageSize]);
@@ -213,9 +212,9 @@
 <!--
 function onSubmitForm(sButton) {
   if (sButton=="Enable/Disable")
-    sButton = "Are you sure you wish to Enable/Disable the selected Staffs?"
+    sButton = "Are you sure you wish to Enable/Disable the selected <?php echo $strDisplayTerm;?> ?"
   else
-    sButton = "Are you sure you wish to delete the selected Staffs?"
+    sButton = "Are you sure you wish to delete the selected <?php echo $strDisplayTerm;?> ?"
 
   var intAnswer = confirm (sButton)
     if (intAnswer)
@@ -240,7 +239,7 @@ function onSubmitForm(sButton) {
 				<select name="intFilterField" >
 					<?php 
 						for ($i=0;$i<count($fldFilterName);$i++) {
-							echo '<option value="$i" ';
+							echo '<option value="'.$i.'" ';
 							if ($intFilterField==$i) {
 								echo "selected";
 							}
@@ -250,10 +249,10 @@ function onSubmitForm(sButton) {
 				</select>
 			</td>
 			<td>
-				<input type="text" name="strFilterValue" size="40" id="plhsearchtext" maxlength="250" value="<?php echo $strFilterValue; ?>" />
+				<input type="text" name="strFilterValue" size="40" id="strFilterValue" maxlength="250" value="<?php echo $strFilterValue; ?>" />
 			</td>
 			<td>
-				<input type="reset" name="resetsearch" value="Clear" />
+				<input type="button" name="resetsearch" onclick="document.getElementById('strFilterValue').value='';" value="Clear" />
 				<input type="submit" name="submitsearch" value="Go" />
 			</td>
 		</tr>
