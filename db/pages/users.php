@@ -14,15 +14,15 @@
 	$strPageTitle  = $strBodyTitle . " :: " . $strServerName;
 	
 	//##### Form variable declarations #####
-	$fldName      = array("User Name","Email","Last Logged In", "Login Count","Created Date");
+	$fldName      = array("Name","Email","Last Logged In", "Login Count","Created Date");
 	$fldValue     = array("NAME","EMAIL","dtlogindate", "intlogincount","CREATEDDATE");
 	$fldSort      = array("NAME","EMAIL","dtlogindate", "intlogincount","CREATEDDATE");
-	$fldSortName  = array("User Name","Email","Last Logged In", "Login Count","Created Date");
+	$fldSortName  = array("Name","Email","Last Logged In", "Login Count","Created Date");
 	$fldSortOrder = array("Ascending", "Descending");
 	$fldSortOVal  = array("ASC", "DESC");
 	$fldRecords   = array("20","50","100","200","500");
 	
-	$fldFilterName = array("User Name","Email","Last Logged In", "Login Count","Created Date");
+	$fldFilterName = array("Name","Email","Last Logged In", "Login Count","Created Date");
 	$fldFilterValue = array("NAME","EMAIL","dtlogindate", "intlogincount","CREATEDDATE");
 	$fldFilterDataType= array("text","text","date","int");
 
