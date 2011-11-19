@@ -189,21 +189,27 @@ class wArLeY_DBMS{
 	}	
 		
 	//Iterate over rows
-	function query($sql_statement, $orderby = null, $limit = null, $offset = 0){		
+	function query($sql_statement, $orderby = null, $limit = null, $offset = null, $paramArray = null){		
 		if($this->con!=null){
 			try {
-				if ($orderby!=null && $limit!=null && $offset!=null) {
-					if($dbtype=="sqlsrv"||$dbtype="mssql"){
-						$sql_statement = "select row_number() over (order by ".$orderby."), rownumber, * from (".$sql_statement.") as table1 where rownumber between $offset and ".($offset+$limit);
+				
+				if (!is_null($orderby) && !is_null($limit) && !is_null($offset)) {
+					if($this->database_type=="sqlsrv"||$this->database_type=="mssql"){
+						$sql_statement = "select * from (select row_number() over (order by ".$orderby.") as rownumber, * from (".$sql_statement.") as table1) as table1 where rownumber between $offset and ".($offset+$limit);
 					}
-					if($dbtype=="mysql"){
+					if($this->database_type=="mysql"){
 						$sql_statement = $sql_statement . " Order By ".$orderby." limit ".$offset.",".$limit;
 					}
+					$this->sql=$sql_statement;
 				} else {
 					$this->sql=$sql_statement;
 				}
 				$stmt = $this->con->prepare($this->sql);
-				$stmt->execute();
+				if (!is_null($paramArray)) {
+					$stmt->execute($paramArray);
+				} else {
+					$stmt->execute();
+				}
 				return $stmt; 
 				//return $this->con->query();
 			} catch(PDOException $e) {				

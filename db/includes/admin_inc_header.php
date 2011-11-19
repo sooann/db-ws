@@ -73,18 +73,18 @@
 										<td>
 											<b>Database:</b>
 											<?php
-												$stmt = $db->query("select * from DATABASES");
+												$showDBstmt = $db->query("select * from DATABASES");
 											?>
 											<select name="selDatabase" id="selDatabase" onchange="" >
 												<option value="">Please Select Database</option>
 												<option value="showAll">&lt;&lt;Show All&gt;&gt;</Show></option>
 												<?php
-													while ($row = $stmt->fetch()) {
-														echo ('<option value="'.$row["DATABASE_ID"].'" ');
-														if ($_SESSION["showDATABASE_ID"] == $row["DATABASE_ID"] ) {
+													while ($showDBrow = $showDBstmt->fetch()) {
+														echo ('<option value="'.$showDBrow["DATABASE_ID"].'" ');
+														if ($_SESSION["showDATABASE_ID"] == $showDBrow["DATABASE_ID"] ) {
 															echo "selected";
 														}
-														echo " >".$row["LABEL"]." (".$row["NAME"].")</option>";
+														echo " >".$showDBrow["LABEL"]." (".$showDBrow["NAME"].")</option>";
 													} 
 												?>	
 											</select>

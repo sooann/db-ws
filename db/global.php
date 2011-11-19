@@ -9,6 +9,8 @@
 		echo "Error: Cant connect to database.";
 	} 
 	global $db;
+	
+	$_REQUEST = array_merge($_POST, $_GET); 
 
 	//Global Variables
 	$strServerName= "DB Support System";
@@ -34,6 +36,8 @@
 	$node->push("text","IPAddress",$_SERVER['REMOTE_ADDR']);
 	$node->push("text","Browser",$_SERVER['HTTP_USER_AGENT']);
 	$node->push("text","RequestMethod",$_SERVER['REQUEST_METHOD']);
+	$node->push("text","POSTVARIABLES",http_build_query($_POST));
+	$node->push("text","GETVARIABLES",http_build_query($_GET));
 	$node->push("date","CreatedDate",now());
 	$intWebpageTrackingID = $db->insert($node);
 	

@@ -4,21 +4,43 @@
 	require_once "../security_config.php";
 
 	//##### Global Variables #####
-	$strBodyTitle   = "Manage Users";
+	$strDisplayTerm = "User";
+	$strDisplayTermPural = "Users";
+	$strMainTable= "USERS";
+	$strMainTableId= "USER_ID";
+	$strNewDisplayPage = "user_form.php";
+	
+	$strBodyTitle   = "Manage ". $strDisplayTerm;
 	$strPageTitle  = $strBodyTitle . " :: " . $strServerName;
+	
+	//##### Form variable declarations #####
+	$fldName      = array("User Name","Email","Last Logged In", "Login Count","Created Date");
+	$fldValue     = array("NAME","EMAIL","dtlogindate", "intlogincount","CREATEDDATE");
+	$fldSort      = array("NAME","EMAIL","dtlogindate", "intlogincount","CREATEDDATE");
+	$fldSortName  = array("User Name","Email","Last Logged In", "Login Count","Created Date");
+	$fldSortOrder = array("Ascending", "Descending");
+	$fldSortOVal  = array("ASC", "DESC");
+	$fldRecords   = array("20","50","100","200","500");
+	
+	$fldFilterName = array("User Name","Email","Last Logged In", "Login Count","Created Date");
+	$fldFilterValue = array("NAME","EMAIL","dtlogindate", "intlogincount","CREATEDDATE");
+	$fldFilterDataType= array("text","text","date","int");
 
 	// ##### Request QueryString Variables #####
-	$blnDeleted = Trim($_GET['del']);
-	$blnActivated  = Trim($_GET['upd']);
+	$blnDeleted = trim($_GET['del']);
+	$blnActivated  = trim($_GET['upd']);
 
 	//' ##### Request Form Variables #####
-	$strAction = Trim($_POST['submit']);
+	$strAction = trim($_POST['submit']);
 
-	$strSubmitted   = Trim($_REQUEST["sm"]);
-	$strSortField   = Trim($_REQUEST["sf"]);
-	$strSortOrder   = Trim($_REQUEST["so"]);
-	$intPageSize    = Trim($_REQUEST["ps"]);
-	$strDeleteIds   = Trim($_POST["strDeleteIds"]);
+	$strSubmitted   = trim($_REQUEST["sm"]);
+	$strSortField   = trim($_REQUEST["sf"]);
+	$strSortOrder   = trim($_REQUEST["so"]);
+	$intPageSize    = trim($_REQUEST["ps"]);
+	$strDeleteIds   = trim($_POST["strDeleteIds"]);
+	
+	$intFilterField = trim($_REQUEST["iff"]);
+	$strFilterValue = trim($_REQUEST["sfv"]);
 
 	// ##### Process QueryString/Form Variables #####
 	If (!is_numeric($strSortField) || $strSortField == "") { $strSortField   = 0; }
@@ -26,19 +48,11 @@
 	If (!is_numeric($intPageSize) || $intPageSize == "")   { $intPageSize    = 0; }
 	If (!is_numeric($intAccessId) || $intAccessId == "")   { $intAccessId    = 0; }
 
-  //##### Other variable declarations #####
-  $fldName      = array("User Name","Email","Last Logged In", "Login Count");
-  $fldValue     = array("NAME","EMAIL","dtlogindate", "intlogincount");
-  $fldSort      = array("NAME","EMAIL","dtlogindate", "intlogincount");
-  $fldSortName  = array("User Name","Email","Last Logged In", "Login Count");
-  $fldSortOrder = array("Ascending", "Descending");
-  $fldSortOVal  = array("ASC", "DESC");
-  $fldRecords   = array("20","50","100","200","500");
-
   // ##### Formulate new querystring #####
-  $strQueryString = "&a=" . $intAccessId . "&sf=" . $strSortField . "&so=" . $strSortOrder . "&ps=" . $intPageSize . "&sm=" . $strSubmitted;
+  $strQueryString = "&a=" . $intAccessId . "&sf=" . $strSortField . "&so=" . $strSortOrder . "&ps=" . $intPageSize . "&sm=" . $strSubmitted . "&iff=" . $intFilterField . "&sfv=" . $strFilterValue;
 
-  $strSortUrl   = $strPostScript . "?a=" . $intAccessId . "&ps=" . $intPageSize . "&sm=" . $strSubmitted ;
+  $strSortUrl   = $strPostScript . "?ps=" . $intPageSize . "&sm=" . $strSubmitted . "&iff=" . $intFilterField . "&sfv=" . $strFilterValue ;
+  
   $fldSortUrl   = array($strSortUrl . "&sf=0", $strSortUrl . "&sf=1", $strSortUrl . "&sf=2", $strSortUrl . "&sf=3", $strSortUrl . "&sf=4", $strSortUrl . "&sf=5", $strSortUrl . "&sf=6", $strSortUrl . "&sf=7");
   $strSortImg = array("", "", "", "");
   for ($i=0; $i<=count($fldSortUrl)-1; $i++) {
@@ -80,22 +94,21 @@
 		  // ##### Begin Transaction #####
 
       // ##### Delete administrators #####
-
       $strSQLQuery="";
       for ($i=0;$i<=count($arrDeleteIds)-1;$i++) {
-        $strSQLQuery = $strSQLQuery . "staff_id = " . $arrDeleteIds[$i] . " ";
+        $strSQLQuery = $strSQLQuery . $strMainTableId . " = " . $arrDeleteIds[$i] . " ";
         If (UBound($arrDeleteIds) > 0 && UBound($arrDeleteIds) != $i) {
         	$strSQLQuery = $strSQLQuery . "OR " ;
         }
       }
 
-		 //delete registrants
-		 $SQLQuery = "DELETE FROM staff".$globallanguagedb_id." WHERE " . $strSQLQuery;
-		 mysql_query($SQLQuery);
+		  //delete registrants
+      $db->delete($strMainTable, $strSQLQuery);
 
-     // ##### Commit transaction #####
-      //header("Location: " . $strPostScript . "?p=" . Trim($_POST['pg']) . "&del=1" . $strQueryString);
-      redirect($strPostScript . "?p=" . Trim($_POST['pg']) . "&del=1" . $strQueryString);
+			//##### Commit transaction #####
+			//header("Location: " . $strPostScript . "?p=" . Trim($_POST['pg']) . "&del=1" . $strQueryString);
+			redirect($strPostScript . "?p=" . Trim($_POST['pg']) . "&del=1" . $strQueryString);
+      
     } Else {
     	//header("Location: " . $strPostScript . "?p=" . Trim($_POST['pg']) . $strQueryString);
     	redirect($strPostScript . "?p=" . Trim($_POST['pg']) . $strQueryString);
@@ -108,31 +121,30 @@
       // ##### Begin Transaction #####
 		  $arrDeleteIds   = split(", ", $strDeleteIds);
 	
-      $SQLQuery = "SELECT staff_id, blnactive FROM staffs WHERE ";
+      $SQLQuery = "SELECT ".$strMainTableId.", ACTIVE FROM ".$strMainTable." WHERE ";
       for ($i=0;$i<=UBound($arrDeleteIds);$i++) {
-        $SQLQuery = $SQLQuery . "staff_id = " . $arrDeleteIds[$i] . " ";
+        $SQLQuery = $SQLQuery . $strMainTableId." = " . $arrDeleteIds[$i] . " ";
         If (UBound($arrDeleteIds) > 0 && UBound($arrDeleteIds) != $i) {
           $SQLQuery = $SQLQuery . "OR ";
         }
       }
 
-			$stmt = mysql_query($SQLQuery);
-      $numrows = mysql_num_rows($stmt);
+      $stmt = $db->query($SQLQuery);
 
-      If ($numrows>0) {
-
-      	while ($row = mysql_fetch_assoc($stmt)) {
-	        // ##### Deactivate records #####
-
-	        if ((int)$row["blnactive"]==1) {
-	        	$blnactive=0;
-	        } else {
-	        	$blnactive=1;
-	        }
-					
-	        $SQLQuery = "Update staffs set blnactive=".$blnactive." WHERE staff_id = " . $row["staff_id"];	        
-	        mysql_query($SQLQuery);
-      	}
+      while ($row = $stmt->fetch()) {
+	      // ##### Deactivate records #####
+        if ($row["ACTIVE"]==1) {
+        	$blnactive=0;
+        } else {
+        	$blnactive=1;
+        }
+				
+        $node = new sqlNode();
+        $node->table = $strMainTable;
+        $node->push("int","ACTIVE",$blnactive);
+        $node->where = $strMainTableId." = " . $row[$strMainTableId];
+        $db->update($node);
+        
       }
 
 			//header("Location: " . $strPostScript . "?p=" . Trim($_POST['pg']) . "&upd=1" . $strQueryString);
@@ -147,25 +159,53 @@
 
 	$p = Trim($_GET["p"]);
 	If ($p == "") { $p = 1; }
+	
+	$paramArray=null;
+	
+	$SQLQuery = "select USERS.*, table1.intcount as intlogincount, table2.dtlogindate from USERS left join (select count(*) as intcount, user_id from loginlog group by user_id) as table1 on USERS.user_id = table1.user_id left outer join (select max(logindate) as dtlogindate,user_id from loginlog group by user_id ) as table2 on users.user_id = table2.user_id";
+	
+	if ($strFilterValue!="") {
+		$SQLQuery = "select * from (".$SQLQuery.") as table1 ";
+		
+		$strFilterDataType=strtolower($fldFilterDataType[$intFilterField]);
+		
+		if ($strFilterDataType == "text") {
+				$SQLQuery .= "Where " . $fldFilterValue[$intFilterField] ." like ? ";
+				$paramArray = array($strFilterValue); 
+		}
+		
+		if ($strFilterDataType == "int" || $strFilterDataType == "dbl") {
+			$SQLQuery .= "Where " . $fldFilterValue[$intFilterField] ." = ? ";
+			$paramArray = array($strFilterValue);
+		}
+		
+		if (($strFilterDataType == "date" || $strFilterDataType == "datetime") && is_date($strFilterValue)) {
+			
+			$SQLQuery .= "Where " . $fldFilterValue[$intFilterField] ." > ? and " . $fldFilterValue[$intFilterField] . " < ? ";
+			$paramArray = array($strFilterValue." 00:00:00",$strFilterValue." 23:59:59");
+		}
+			
+	}
 
-  $SQLQuery = "SELECT count(*) as intcount FROM staffs";
-  $stmt = mysql_query($SQLQuery);
-  $ps = mysql_fetch_assoc($stmt);
-  $numrows = $ps["intcount"];
 
+  $stmt = $db->query("SELECT count(*) as intcount FROM (".$SQLQuery.") as table1");
+  $row = $stmt->fetch(); 
+  $numrows = $row["intcount"];
+  
+	
   if ($numrows!=0) {
+  
   	$intpagecount = ceil($numrows/$fldRecords[$intPageSize]);
-
-  	$SQLQuery = "select * from staffs left join (select max(dtlogoutdate) as dtlogoutdate,max(dtcreatedDate) as dtlogindate, count(*) as intlogincount,staff_id from staffloginlog group by staff_id) as table1 on staffs.staff_id = table1.staff_id ORDER BY " . $fldSort[$strSortField] . " " . $fldSortOVal[$strSortOrder] . " limit " . ($p-1)*((int)$fldRecords[$intPageSize]). "," . $fldRecords[$intPageSize];
-  	$stmt = mysql_query($SQLQuery);
-
+   	
+  	$stmt = $db->query($SQLQuery, $fldSort[$strSortField] . " " . $fldSortOVal[$strSortOrder], $fldRecords[$intPageSize], ($p-1)*((int)$fldRecords[$intPageSize]), $paramArray); 
+  	
   } else {
   	$intpagecount = 0;
   }
-
+	
    // ##### End of initialization #############################################
 
-   include "../includes/admin_inc_header.php";
+   require_once "../includes/admin_inc_header.php";
 ?>
 
 <script language="javascript" src="../js/tablesupport2.js"></script>
@@ -189,12 +229,43 @@ function onSubmitForm(sButton) {
 <?php // ##### Start of web form ###############################################
 ?>
 
+<?php // ##### Simple Filter Form ###############################################
+?>
+
+<form method="post" name="filterForm" action="<?php echo"$strPostScript"; ?>" style="margin-bottom:0px;margin-top:0px;">
+	<table cellspacing="0" cellpadding="3" border="0">
+		<tr>
+			<td>
+				Filter: 
+				<select name="intFilterField" >
+					<?php 
+						for ($i=0;$i<count($fldFilterName);$i++) {
+							echo '<option value="$i" ';
+							if ($intFilterField==$i) {
+								echo "selected";
+							}
+							echo " >".$fldFilterName[$i]."</option>";
+						}
+					?>
+				</select>
+			</td>
+			<td>
+				<input type="text" name="strFilterValue" size="40" id="plhsearchtext" maxlength="250" value="<?php echo $strFilterValue; ?>" />
+			</td>
+			<td>
+				<input type="reset" name="resetsearch" value="Clear" />
+				<input type="submit" name="submitsearch" value="Go" />
+			</td>
+		</tr>
+	</table>
+</form><br />
+
 <?php
 	 // ##### Show column data #####
    If ($numrows>0) {
-     $intRowsCount    = 0;
+     $intRowsCount = 0;
 ?>
-	    <form method="post" name="cordlife" action="<?php echo"$strPostScript"; ?>" style="margin-bottom:0px;margin-top:0px;">
+	    <form method="post" name="mainForm" action="<?php echo"$strPostScript"; ?>" style="margin-bottom:0px;margin-top:0px;">
 	      <table class="tableBorderWhite" cellSpacing="0" cellPadding="0" width="100%" border="0">
 	        <tr>
 	          <td vAlign=top width="100%">
@@ -211,9 +282,9 @@ function onSubmitForm(sButton) {
 ?>
                 </tr>
 <?php
-     While ($ps = mysql_fetch_assoc($stmt) ) {
+     While ($ps = $stmt->fetch() ) {
 
-       If ((int)($ps['blnActive']) == 0) {
+       If ((int)($ps['ACTIVE']) == 0) {
          $strColColor = "#FAE8CB";
        } Else {
          $strColColor = "#FFFFFF";
@@ -223,24 +294,26 @@ function onSubmitForm(sButton) {
 
        echo "<td>";
 
-       echo '<a class="default" href="staff_form.php?a=edit&id=' . Trim($ps['staff_id']) . '" onmouseover="window.status=\'Update this Staff\\\'s details\'; return true" onmouseout="window.status=\'' . $strPageTitle . '\'; return true" title="Update this Staff\'s details"><img src="../images/buttons/edititem.gif" HEIGHT="15" WIDTH="13" BORDER="0" ALT="Update this Staff\'s details"></a>';
+       echo '<a class="default" href="'.$strNewDisplayPage.'?a=edit&id=' . Trim($ps[$strMainTableId]) . '" onmouseover="window.status=\'Update this '.$strDisplayTerm.'\\\'s details\'; return true" onmouseout="window.status=\'' . $strPageTitle . '\'; return true" title="Update this '.$strDisplayTerm.'\'s details"><img src="../images/buttons/edititem.gif" HEIGHT="15" WIDTH="13" BORDER="0" ALT="Update this '.$strDisplayTerm.'\'s details"></a>';
 
        echo "</td>";
        echo "<td>";
 
        // ##### Cannot DELETE Master User Account #####
-       echo '<input class="checkbox" type="checkbox" onclick="checkRow(this)" name="strDeleteIds" value="' . Trim($ps["staff_id"]) .'" title="Select or de-select this item">';
+       echo '<input class="checkbox" type="checkbox" onclick="checkRow(this)" name="strDeleteIds" value="' . Trim($ps[$strMainTableId]) .'" title="Select or de-select this item">';
 
        echo "</td>";
 
 			 for ($i=0;$i<=UBound($fldName);$i++) {
          echo "<td>";
-       	 if (is_null($ps[$fldValue[$i]])) {
+         if ($i==0) {
+         	 echo '<a class="default" href="' . $strNewDisplayPage . '?a=view&id=' . trim($ps[$strMainTableId]) . '" onmouseover="window.status=\'View this '. $strDisplayTerm . '\\\'s details\'; return true" onmouseout="window.status=\'' . $strPageTitle .'\'; return true" title="View this '. $strDisplayTerm . '\'s details" >' . $ps[$fldValue[$i]] . '</a>';
+         } elseif (is_null($ps[$fldValue[$i]])) {
        	 	 echo "-";
        	 } Elseif ($ps[$fldValue[$i]]=="") {
        	 	 echo "-";
        	 } else {
-       	 	 echo Trim($ps[$fldValue[$i]]);
+       	 	 echo trim($ps[$fldValue[$i]]);
        	 }
          echo "</td>";
 			 }
@@ -265,7 +338,7 @@ function onSubmitForm(sButton) {
                            <td valign="top" >
                              <table cellspacing="0" cellpadding="1" border="0">
                               <tr>
-                               <td><input type="button" class="inputButton" Name="submit" value="New Staff" onclick="parent.location='staff_form.php'">&nbsp;</td>
+                               <td><input type="button" class="inputButton" Name="submit" value="New <?php echo $strDisplayTerm; ?>" onclick="parent.location='<?php echo $strNewDisplayPage; ?>'">&nbsp;</td>
                                <td><input type="submit" class="inputButton" Name="submit" value="Enable/Disable" onclick="return onSubmitForm('Enable/Disable');">&nbsp;</td>
                                <!---
                                <td><input type="submit" class="inputButton" Name="submit" value="Delete"  onclick="return onSubmitForm('Delete');">&nbsp;</td>
@@ -337,13 +410,13 @@ function onSubmitForm(sButton) {
 
             <table class="tableBorderWhite" cellSpacing="0" cellPadding="0" width="100%" border="0">
               <tr>
-                <td vAlign=top width="100%" class="darkgrey2">There are no Staffs available. Please check back later.</td>
+                <td vAlign=top width="100%" class="darkgrey2">There are no <?php echo $strDisplayTerm; ?> available. Please check back later.</td>
               </tr>
               <tr>
                 <td height="10"></td>
               </tr>
               <tr class="endformcell">
-                <td><input type="button" class="inputButton" Name="submit" value="New Staff" onclick="parent.location='staff_form.php'"></td>
+                <td><input type="button" class="inputButton" Name="submit" value="New <?php echo $strDisplayTerm; ?>" onclick="parent.location='<?php echo $strNewDisplayPage; ?>'"></td>
               </tr>
             </table>
 
@@ -353,17 +426,17 @@ function onSubmitForm(sButton) {
 ?>
 <script language=javascript>
 <!--
-  var frm = document.cordlife;
+  var frm = document.mainForm;
 //-->
 </script>
 <?php
 	If ($blnDeleted) {
 		echo '<script language="JavaScript">';
-		echo 'window.alert("The Staff(s) that you selected have been deleted.");';
+		echo 'window.alert("The '.$strDisplayTerm.'(s) that you selected have been deleted.");';
 		echo '</script>';
 	} ElseIf ($blnActivated) {
 		echo '<script language="JavaScript">';
-		echo 'window.alert("The Staff(s) that you selected have been Enabled/Disabled.");';
+		echo 'window.alert("The '.$strDisplayTerm.'(s) that you selected have been Enabled/Disabled.");';
 		echo '</script>';
 	}
 

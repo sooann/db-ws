@@ -1,12 +1,40 @@
 <?php
-		//currentdate function
-	function now() {
-		return date("Y-m-d H:i:s",time());
-	}
 	
+	function Ubound($arrtemp) {
+		if (is_array($arrtemp)) {
+			return count($arrtemp)-1;
+		} else {
+			return null;
+		}
+	}
+
 	function redirect($strURL) {
 		echo '<html><body onload="window.location.href=\''.$strURL.'\';"><body></html>';
 		exit();
+	}
+	
+	//date functions
+	function is_date( $str )
+	{
+	  $stamp = strtotime( $str );
+	 
+	  if (!is_numeric($stamp)) {
+	     return FALSE;
+	  }
+	  
+	  $month = date( 'm', $stamp );
+	  $day   = date( 'd', $stamp );
+	  $year  = date( 'Y', $stamp );
+	 
+	  if (checkdate($month, $day, $year)) {
+	     return TRUE;
+	  }
+	 
+	  return FALSE;
+	} 
+	
+	function now() {
+		return date("Y-m-d H:i:s",time());
 	}
 	
 	function dateadd($interval, $number, $date) {
