@@ -76,7 +76,7 @@
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
 <head>
 	<meta charset="UTF-8">
-	<title>Login | Chromatron Admin Theme</title>
+	<title>Login | <?php echo $strServerName; ?></title>
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">

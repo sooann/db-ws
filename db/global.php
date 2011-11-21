@@ -11,9 +11,14 @@
 	global $db;
 	
 	$_REQUEST = array_merge($_POST, $_GET); 
-
+	global $_REQUEST;
+	
 	//Global Variables
-	$strServerName= "DB Support System";
+	$strServerName= "CRM Database Administrator";
+	global $strServerName;
+	
+	$strPostScript = $_SERVER['SCRIPT_NAME'];
+	global $strPostScript;
 
 	session_start();
 	session_cache_expire(30);
@@ -23,8 +28,6 @@
 	
 	date_default_timezone_set("Asia/Singapore");
 	
-	$strPostScript = $_SERVER['SCRIPT_NAME'];
-
 	//log webpage
 	$node = new sqlNode();
 	$node->table = "webpagetracking";

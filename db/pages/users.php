@@ -11,7 +11,7 @@
 	$strNewDisplayPage = "user_form.php";
 	
 	$strBodyTitle   = "Manage ". $strDisplayTerm;
-	$strPageTitle  = $strBodyTitle . " :: " . $strServerName;
+	$strPageTitle  = $strBodyTitle;
 	
 	//##### Form variable declarations #####
 	$fldName      = array("Name","Email","Last Logged In", "Login Count","Created Date");
