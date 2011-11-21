@@ -1,0 +1,135 @@
+<!doctype html>
+<!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+	<title>Chromatron Admin Theme</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<!-- CSS Styles -->
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/colors.css">
+	<link rel="stylesheet" href="css/jquery.tipsy.css">
+    <link rel="stylesheet" href="css/jquery.dd.css">
+
+	<!-- Google WebFonts -->
+	<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+    
+    <script src="js/libs/modernizr-1.7.min.js"></script>
+    
+</head>
+
+<!-- Add class .fixed for fixed layout. You would need also edit CSS file for width -->
+<body>
+
+	<!-- Fixed Layout Wrapper -->
+	<div class="fixed-wraper">
+
+	<!-- Aside Block -->
+	<section role="navigation">
+		<!-- Header with logo and headline -->
+		<header>
+        	<!--
+			<a href="/" title="Back to Homepage"></a>
+			<h1>Lorem ipsum dolor sit amet!</h1>
+            -->
+            <div id="headCRM" >CRM</div>
+            <div Id="headDBA" >Database Administrator</div>
+		</header>
+		
+		<!-- User Info -->
+		<section id="user-info">
+        	<!--
+			<img src="img/sample_user.png" alt="Sample User Avatar">
+            -->
+			<div>
+				<a href="#" title="Account Settings and Profile Page">Joe Tester</a>
+				<em>Administrator</em>
+				<ul>
+					<li><a class="button-link" href="#" title="Update Profile" rel="tooltip">Update Profile</a></li>
+                    <li><a class="button-link" href="#" title="Change Password" rel="tooltip">Change Password</a></li>
+					<li><a class="button-link" href="#" title="And this is Sparta!" rel="tooltip">logout</a></li>
+				</ul>
+			</div>
+		</section>
+		<!-- /User Info -->
+		
+		<!-- Main Navigation -->
+		<nav id="main-nav">
+			<ul>
+				<li><a href="#" title="" class="dashboard no-submenu">Users</a><span class="counttip" title="You have 3 new tasks">3</span></li> <!-- Use class .no-submenu to open link instead of a sub menu-->
+				<!-- Use class .current to open submenu on page load -->
+                	
+				<li>
+                    <div class="projects">
+                    <select name="showDataBase" class="showDataBase" >
+                    	<option value="">Select a Database</option>
+                        <option value="showALL">(Show All Databases)</option>
+                    </select>
+                    </div>
+                    <span class="counttip" title="You have 3 new tasks">3</span>
+                    
+				</li>
+				<li class="current">
+					<a href="" title="" class="products">Tables</a>
+					<ul class="current">
+						<li><a href="" title="">Testing 1</a></li>
+						<li><a href="" title="">Testing 2</a></li>
+						<li><a href="" title="">Testing 3</a></li>
+						<li><a href="" title="">Testing 4</a></li>
+					</ul>
+				</li>
+			</ul>
+		</nav>
+		<!-- /Main Navigation -->
+	</section>
+	<!-- /Aside Block -->
+	
+	<!-- Main Content -->
+	<section role="main">
+		
+		<!-- Breadcumbs -->
+		<ul id="breadcrumbs">
+			<li><a href="#" title="Back to Homepage">Back to Home</a></li>
+			<li><a href="#">Projects</a></li>
+			<li><a href="#">Project's Assets</a></li>
+			<li><a href="#">Edit Assets</a></li>
+			<li>Current Page</li>
+		</ul>
+		<!-- /Breadcumbs -->
+		
+        <article class="custom-block" >
+        	<div class="article-container">
+            	<header>
+                	<h2>Your Content Header</h2>
+                </header>
+                <section>
+                	Your Content area
+                </section>
+                <footer>
+                	&copy; Copyright. All Rights Reserved.
+                </footer>
+            </div>
+        </article>
+        
+	</section>
+	<!-- /Main Content -->
+	
+	</div>
+	<!-- /Fixed Layout Wrapper -->
+
+	<!-- JS Libs at the end for faster loading -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+	<script>!window.jQuery && document.write(unescape('%3Cscript src="js/jquery/jquery-1.5.1.min.js"%3E%3C/script%3E'))</script>
+	<script src="js/libs/selectivizr.js"></script>
+	<script src="js/jquery/jquery.tipsy.js"></script>
+	<script src="js/jquery/excanvas.js"></script>
+    <script type="text/javascript" src="js/jquery/jquery.dd.js"></script>
+	<script src="js/script.js"></script>
+    
+</body>
+</html>
