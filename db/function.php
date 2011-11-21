@@ -1,5 +1,13 @@
 <?php
 	
+	function addErrorNotification ($strText) {
+		echo '<div class="notification error">';
+		echo '<a href="#" class="close-notification" title="Hide Notification" rel="tooltip">x</a>';
+		echo '<p><strong>Error: </strong> '.$strText.'</p>';
+		echo '</div>';
+		
+	}
+
 	function Ubound($arrtemp) {
 		if (is_array($arrtemp)) {
 			return count($arrtemp)-1;
