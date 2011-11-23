@@ -238,12 +238,12 @@ function onSubmitForm(sButton) {
 <?php // ##### Simple Filter Form ###############################################
 ?>
 
-<form method="post" name="filterForm" action="<?php echo"$strPostScript"; ?>" style="margin-bottom:0px;margin-top:0px;">
-	<fieldset>
+<form method="post" name="filterForm" class="filter-container" action="<?php echo"$strPostScript"; ?>" >
+	<fieldset class="" >
 		<legend>Filter Table</legend>
-		<dl>
-			<dt><label>Field</label></dt>
-			<dd>
+		<div class="filterform">
+			<div>
+				<label>Field</label><br />
 				<select name="intFilterField" >
 					<?php 
 						for ($i=0;$i<count($fldFilterName);$i++) {
@@ -255,17 +255,16 @@ function onSubmitForm(sButton) {
 						}
 					?>
 				</select>
-			</dd>
-			<dt><label>Filter Value</label></dt>
-			<dd>
-				<input type="text" name="strFilterValue" id="strFilterValue" maxlength="250" value="<?php echo $strFilterValue; ?>" />		
-			</dd>
-		</dl>
+			</div>
+			<div>
+				<label>Value</label><br />
+				<input type="text" name="strFilterValue" id="strFilterValue" maxlength="250" value="<?php echo $strFilterValue; ?>" />
+			</div>
+			<input type="button" class="button" name="resetsearch" onclick="document.getElementById('strFilterValue').value='';" value="Clear" />
+			<input type="submit" class="button" name="submitsearch" value="Go" />
+		</div>
 	</fieldset>
-	<input type="button" class="button" name="resetsearch" onclick="document.getElementById('strFilterValue').value='';" value="Clear" />
-	<input type="submit" class="button" name="submitsearch" value="Go" />
-</form><br />
-
+</form>
 <?php
 	 // ##### Show column data #####
    If ($numrows>0) {

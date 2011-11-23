@@ -20,6 +20,12 @@ $(function () {
 	$('.check-all').click(
 		function(){
 			$(this).parents('form').find('input:checkbox').attr('checked', $(this).is(':checked'));
+			if ($(this).is(':checked')) {
+				$(this).parents('form').find('input:checkbox').parents('tbody').find('tr').addClass("selected");
+			} else {
+				$(this).parents('form').find('input:checkbox').parents('tbody').find('tr').removeClass("selected");
+			}
+			
 		}
 	)
 
