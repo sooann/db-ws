@@ -80,7 +80,7 @@
 				<em>Administrator</em>
 				<ul>
 					<li><a class="button-link" href="#" title="Update Profile" rel="tooltip">Update Profile</a></li>
-                    <li><a class="button-link" href="#" title="Change Password" rel="tooltip">Change Password</a></li>
+					<li><a class="button-link" href="#" title="Change Password" rel="tooltip">Change Password</a></li>
 					<li><a class="button-link" href="logout.php" title="Logout" rel="tooltip">logout</a></li>
 				</ul>
 			</div>

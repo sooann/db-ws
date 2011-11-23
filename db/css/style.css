@@ -933,7 +933,7 @@ form span.invalid-side-note { background-image:url(../img/icons/icon_error.png);
 	border:none;
 	box-shadow:none;
 }
-.ie7 .checkbox., .ie8 .checkbox.], .ie9 .checkbox { top:-7px; }
+.ie7 .checkbox., .ie8 .checkbox, .ie9 .checkbox { top:-7px; }
 .ie7 .radio, .ie8 .radio, .ie9 .radio { top:-5px; }
 .ie7 td select {
 	position:relative;

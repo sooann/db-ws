@@ -13,6 +13,8 @@
 	$strBodyTitle   = "Manage ". $strDisplayTerm;
 	$strPageTitle  = $strBodyTitle;
 	
+	$arrBreadCrumb = array(array("url"=>"users.php","name"=>"Users"));
+	
 	//##### Form variable declarations #####
 	$fldName      = array("Name","Email","Last Logged In", "Login Count","Created Date");
 	$fldValue     = array("NAME","EMAIL","dtlogindate", "intlogincount","CREATEDDATE");
@@ -205,9 +207,9 @@
    // ##### End of initialization #############################################
 
    require_once "../includes/admin_inc_header.php";
+   
 ?>
 
-<script language="javascript" src="../js/tablesupport2.js"></script>
 <script language="javascript" >
 <!--
 function onSubmitForm(sButton) {
@@ -232,10 +234,11 @@ function onSubmitForm(sButton) {
 ?>
 
 <form method="post" name="filterForm" action="<?php echo"$strPostScript"; ?>" style="margin-bottom:0px;margin-top:0px;">
-	<table cellspacing="0" cellpadding="3" border="0">
-		<tr>
-			<td>
-				Filter: 
+	<fieldset>
+		<legend>Filter Table</legend>
+		<dl>
+			<dt><label>Field</label></dt>
+			<dd>
 				<select name="intFilterField" >
 					<?php 
 						for ($i=0;$i<count($fldFilterName);$i++) {
@@ -247,16 +250,15 @@ function onSubmitForm(sButton) {
 						}
 					?>
 				</select>
-			</td>
-			<td>
-				<input type="text" name="strFilterValue" size="40" id="strFilterValue" maxlength="250" value="<?php echo $strFilterValue; ?>" />
-			</td>
-			<td>
-				<input type="button" name="resetsearch" onclick="document.getElementById('strFilterValue').value='';" value="Clear" />
-				<input type="submit" name="submitsearch" value="Go" />
-			</td>
-		</tr>
-	</table>
+			</dd>
+			<dt><label>Filter Value</label></dt>
+			<dd>
+				<input type="text" name="strFilterValue" id="strFilterValue" maxlength="250" value="<?php echo $strFilterValue; ?>" />		
+			</dd>
+		</dl>
+	</fieldset>
+	<input type="button" class="button" name="resetsearch" onclick="document.getElementById('strFilterValue').value='';" value="Clear" />
+	<input type="submit" class="button" name="submitsearch" value="Go" />
 </form><br />
 
 <?php
@@ -264,42 +266,47 @@ function onSubmitForm(sButton) {
    If ($numrows>0) {
      $intRowsCount = 0;
 ?>
-	    <form method="post" name="mainForm" action="<?php echo"$strPostScript"; ?>" style="margin-bottom:0px;margin-top:0px;">
-	      <table class="tableBorderWhite" cellSpacing="0" cellPadding="0" width="100%" border="0">
+	    <form method="post" name="mainForm" action="<?php echo"$strPostScript"; ?>" class="table-form" >
+	      <table class="listing-container" cellSpacing="0" cellPadding="0" width="100%" border="0">
 	        <tr>
-	          <td vAlign=top width="100%">
-	            <table class="tableRowWhite" cellSpacing=0 cellPadding=0 width="100%" border="0">
-	              <tr bgcolor="#DDDDDD">
-	                <td>&nbsp;</td>
-	                <td><input class="checkbox" type="checkbox" name="allboxes" title="Select or de-select all items" onclick="checkAll();"></td>
+	          <td vAlign=top width="100%" >
+	            <table class="listingTable" cellSpacing=0 cellPadding=0 width="100%" border="0">
+	            	<thead>
+		              <tr >
+		                <th class="th-edit" >&nbsp;</th>
+		                <th class="th-chkbox" ><input class="check-all" type="checkbox" name="allboxes" title="Select or de-select all items" ></th>
 
 <?php
 		 // ##### Show column header #####
      for ($i=0; $i<=UBound($fldName);$i++) {
-		 		echo '<td noWrap><b><a class="controlBold" href="'.$fldSortUrl[$i].'" title="Sort '.$fldName[$i].'">'.$fldName[$i].'</a>&nbsp;'.$strSortImg[$i].'&nbsp;</b></td>';
+		 		echo '<th noWrap><a href="'.$fldSortUrl[$i].'" title="Sort '.$fldName[$i].'">'.$fldName[$i].'</a>&nbsp;'.$strSortImg[$i].'&nbsp;</th>';
 		 }
 ?>
-                </tr>
+                	</tr>
+                </thead>
+                <tbody>
 <?php
      While ($ps = $stmt->fetch() ) {
 
        If ((int)($ps['ACTIVE']) == 0) {
          $strColColor = "#FAE8CB";
+         $strTRClass="disabled";
        } Else {
          $strColColor = "#FFFFFF";
+         $strTRClass="";
        }
 
-       echo '<tr bgcolor="' . $strColColor . '">';
+       echo '<tr class="disabled" >';
 
-       echo "<td>";
+       echo '<td class="td-edit">';
 
-       echo '<a class="default" href="'.$strNewDisplayPage.'?a=edit&id=' . Trim($ps[$strMainTableId]) . '" onmouseover="window.status=\'Update this '.$strDisplayTerm.'\\\'s details\'; return true" onmouseout="window.status=\'' . $strPageTitle . '\'; return true" title="Update this '.$strDisplayTerm.'\'s details"><img src="../images/buttons/edititem.gif" HEIGHT="15" WIDTH="13" BORDER="0" ALT="Update this '.$strDisplayTerm.'\'s details"></a>';
+       echo '<a href="'.$strNewDisplayPage.'?a=edit&id=' . Trim($ps[$strMainTableId]) . '" onmouseover="window.status=\'Update this '.$strDisplayTerm.'\\\'s details\'; return true" onmouseout="window.status=\'' . $strPageTitle . '\'; return true" title="Update this '.$strDisplayTerm.'\'s details"><img src="../images/buttons/edititem.gif" HEIGHT="15" WIDTH="13" BORDER="0" ALT="Update this '.$strDisplayTerm.'\'s details"></a>';
 
        echo "</td>";
-       echo "<td>";
+       echo '<td class="td-chkbox" >';
 
        // ##### Cannot DELETE Master User Account #####
-       echo '<input class="checkbox" type="checkbox" onclick="checkRow(this)" name="strDeleteIds" value="' . Trim($ps[$strMainTableId]) .'" title="Select or de-select this item">';
+       echo '<input class="checkbox" type="checkbox" name="strDeleteIds" value="' . Trim($ps[$strMainTableId]) .'" title="Select or de-select this item">';
 
        echo "</td>";
 
@@ -320,37 +327,31 @@ function onSubmitForm(sButton) {
 
        $intRowsCount++;
      }
-?>
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
-            <table cellSpacing="0" cellPadding="0" width="100%" border="0">
-              <tr>
-                <td vAlign=top width="100%">
-                   <tr>
-                     <td width="100%" colspan="<?php echo UBound($fldName)+3 ?>"><br>
-                       <table border="0" class="subMenu" cellSpacing="0" cellPadding="0" width="100%">
-                         <tr class="endformcell" align="left">
-                           <td valign="top" >
-                             <table cellspacing="0" cellpadding="1" border="0">
-                              <tr>
-                               <td><input type="button" class="inputButton" Name="submit" value="New <?php echo $strDisplayTerm; ?>" onclick="parent.location='<?php echo $strNewDisplayPage; ?>'">&nbsp;</td>
-                               <td><input type="submit" class="inputButton" Name="submit" value="Enable/Disable" onclick="return onSubmitForm('Enable/Disable');">&nbsp;</td>
-                               <!---
-                               <td><input type="submit" class="inputButton" Name="submit" value="Delete"  onclick="return onSubmitForm('Delete');">&nbsp;</td>
-                               --->
-                               <td valign="top"><img src="../images/buttons/inactiveitem.gif" HEIGHT="15" WIDTH="70" BORDER="0" ALT="Denotes Inactive users"></a></td>
-                              </tr>
-                            </table>
-                           </td>
-                           <td width="30%">&nbsp;</td>
-                           <td noWrap align="right">
-                             Page <?php echo $p ?> of <?php echo $intpagecount ?> :
-
+?>							</tbody>
+              </table>
+            </td>
+          </tr>
+          <tr>
+          	<td >
+          		<table class="listing-actions" width="100%">
+								<tr>
+									<td>
+			          		<input type="button" class="button" Name="submit" value="Create New <?php echo $strDisplayTerm; ?>" onclick="parent.location='<?php echo $strNewDisplayPage; ?>'">
+				          	<input type="submit" class="button" Name="submit" value="Enable/Disable" onclick="return onSubmitForm('Enable/Disable');">
+				          	<!--
+				          	<input type="submit" class="button" Name="submit" value="Delete"  onclick="return onSubmitForm('Delete');">
+				          	-->
+				          	<img src="../images/buttons/inactiveitem.gif" HEIGHT="15" WIDTH="70" BORDER="0" ALT="Denotes Inactive users">
+			          	</td>
+									<td width="30%">&nbsp;</td>
+									<td noWrap align="right">
+										Page <?php echo $p ?> of <?php echo $intpagecount ?>
+							
 <?php   // ##### Show paging and navigation #####
+		
+		if ($intpagecount > 1) {
+			echo "&nbsp;:&nbsp;";
+		}
      If ($p > 1) {
        echo '<a class="default" href="' . $strPostScript . '?p=1' . $strQueryString . '" onmouseover="window.status=\'Go to first page\'; return true" onmouseout="window.status=\'' . $strPageTitle . '\'; return true">First</a>&nbsp;|&nbsp;';
        echo '<a class="default" href="' . $strPostScript . '?p=' . ($p-1) . $strQueryString . '" onmouseover="window.status=\'Go to previous page\'; return true" onmouseout="window.status=\'' . $strPageTitle . '\'; return true">Prev</a>&nbsp;';
@@ -387,23 +388,21 @@ function onSubmitForm(sButton) {
         echo '<a class="default" href="' . $strPostScript . '?p=' . $intpagecount . $strQueryString . '" onmouseover="window.status=\'Go to last page\'; return true" onmouseout="window.status=\'' . $strPageTitle . '\'; return true">Last</a>';
      }
 ?>
-                           </td>
-                         </tr>
-                       </table>
-                       <input type="hidden" name="sm" value="strSubmitted">
-                       <input type="hidden" name="pg" value="<?php echo $p ?>">
-                       <input type="hidden" name="sf" value="<?php echo $strSortField ?>">
-                       <input type="hidden" name="so" value="<?php echo $strSortOrder ?>">
-                       <input type="hidden" name="ps" value="<?php echo $intPageSize ?>">
-                       <input type="hidden" name="a" value="<?php echo $intAccessId ?>">
-                       <input type="hidden" name="strText" value="<?php echo $strText ?>">
-                       <input type="hidden" name="intfield" value="<?php echo $intfield ?>">
-                     </td>
-                   </tr>
-                </td>
-              </tr>
-            </table>
-            </form>
+									</td>
+								</tr>
+							</table>
+            </td>	
+          </tr>
+        </table>
+        <input type="hidden" name="sm" value="strSubmitted">
+        <input type="hidden" name="pg" value="<?php echo $p ?>">
+        <input type="hidden" name="sf" value="<?php echo $strSortField ?>">
+        <input type="hidden" name="so" value="<?php echo $strSortOrder ?>">
+        <input type="hidden" name="ps" value="<?php echo $intPageSize ?>">
+        <input type="hidden" name="a" value="<?php echo $intAccessId ?>">
+        <input type="hidden" name="strText" value="<?php echo $strText ?>">
+        <input type="hidden" name="intfield" value="<?php echo $intfield ?>">
+			</form>
 
 <?php } Else { ?>
 
@@ -411,11 +410,8 @@ function onSubmitForm(sButton) {
               <tr>
                 <td vAlign=top width="100%" class="darkgrey2">There are no <?php echo $strDisplayTerm; ?> available. Please check back later.</td>
               </tr>
-              <tr>
-                <td height="10"></td>
-              </tr>
               <tr class="endformcell">
-                <td><input type="button" class="inputButton" Name="submit" value="New <?php echo $strDisplayTerm; ?>" onclick="parent.location='<?php echo $strNewDisplayPage; ?>'"></td>
+                <td><input type="button" class="button" Name="submit" value="Create New <?php echo $strDisplayTerm; ?>" onclick="parent.location='<?php echo $strNewDisplayPage; ?>'"></td>
               </tr>
             </table>
 
