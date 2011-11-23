@@ -47,7 +47,7 @@ body, select, input, textarea { color:#666; }
 /*  General Settings  */
 body {
 	background:url('../img/bgs/bg_aside_main.png') repeat-y 263px 0;
-	font-family:'PT Sans', Arial, sans-serif;
+	font-family: Tahoma, Arial, sans-serif;
 	font-size:13px;
 	*font-size:small;
 	zoom:1;
@@ -67,7 +67,10 @@ body section[role=main] {
 	margin-left:271px;
 	padding:25px;
 }
-select, input, textarea, button { font:99% sans-serif; }
+select, input, textarea, button { 
+	font-family: Tahoma, Arial, sans-serif;
+	font-size:99%; 
+}
 h1, h2, h3, h4, h5, h6, strong, b, th { font-weight:bold; }
 em, i { font-style:italic; }
 ul, ol { margin:0 0 1em 1em; }
@@ -211,9 +214,9 @@ section[role=navigation] header h1 {
 	-webkit-transition:color 400ms ease;
 	-moz-transition:color 400ms ease;
 	transition:color 400ms ease;
-	background-position:25px 11px;
+	background-position:25px 13px;
 	background-repeat:no-repeat;
-	height:23px;
+	height:26px;
 }
 
 #main-nav ul ul {
@@ -933,7 +936,7 @@ form span.invalid-side-note { background-image:url(../img/icons/icon_error.png);
 	border:none;
 	box-shadow:none;
 }
-.ie7 .checkbox., .ie8 .checkbox, .ie9 .checkbox { top:-7px; }
+.ie7 .checkbox, .ie8 .checkbox, .ie9 .checkbox { top:-7px; }
 .ie7 .radio, .ie8 .radio, .ie9 .radio { top:-5px; }
 .ie7 td select {
 	position:relative;

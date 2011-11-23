@@ -15,6 +15,8 @@
 	
 	$arrBreadCrumb = array(array("url"=>"users.php","name"=>"Users"));
 	
+	$strHeadTags = '<link rel="stylesheet" href="../css/listing.css">';
+	
 	//##### Form variable declarations #####
 	$fldName      = array("Name","Email","Last Logged In", "Login Count","Created Date");
 	$fldValue     = array("NAME","EMAIL","dtlogindate", "intlogincount","CREATEDDATE");
@@ -61,14 +63,16 @@
     If ( $i == ((int)($strSortField))) {
       If ((int)($strSortOrder) == 0) {
         $fldSortUrl[$i] = $fldSortUrl[$i] . "&so=1";
-        $strSortImg[$i] = '<img src="../images/sortascd.gif" width="7" height="7" border="0">';
-      } else {
+        $strSortImg[$i] = '<img src="../img/jquery/sort_asc.png" border="0">';
+      } else if ((int)($strSortOrder) == 1) {
         $fldSortUrl[$i] = $fldSortUrl[$i] . "&so=0";
-        $strSortImg[$i] = '<img src="../images/sortdesc.gif" width="7" height="7" border="0">';
+        $strSortImg[$i] = '<img src="../img/jquery/sort_desc.png" border="0">';
+      } else {
+      	$strSortImg[$i] = '<img src="../img/jquery/sort_both.png" border="0">';
       }
     } else {
       $fldSortUrl[$i] = $fldSortUrl[$i] . "&so=0";
-      $strSortImg[$i] = "";
+      $strSortImg[$i] = '<img src="../img/jquery/sort_both.png" border="0">';
     }
   }
 
@@ -210,6 +214,7 @@
    
 ?>
 
+
 <script language="javascript" >
 <!--
 function onSubmitForm(sButton) {
@@ -267,9 +272,8 @@ function onSubmitForm(sButton) {
      $intRowsCount = 0;
 ?>
 	    <form method="post" name="mainForm" action="<?php echo"$strPostScript"; ?>" class="table-form" >
-	      <table class="listing-container" cellSpacing="0" cellPadding="0" width="100%" border="0">
-	        <tr>
-	          <td vAlign=top width="100%" >
+	      <div class="listing-container" >
+	        
 	            <table class="listingTable" cellSpacing=0 cellPadding=0 width="100%" border="0">
 	            	<thead>
 		              <tr >
@@ -329,10 +333,7 @@ function onSubmitForm(sButton) {
      }
 ?>							</tbody>
               </table>
-            </td>
-          </tr>
-          <tr>
-          	<td >
+
           		<table class="listing-actions" width="100%">
 								<tr>
 									<td>
@@ -341,9 +342,8 @@ function onSubmitForm(sButton) {
 				          	<!--
 				          	<input type="submit" class="button" Name="submit" value="Delete"  onclick="return onSubmitForm('Delete');">
 				          	-->
-				          	<img src="../images/buttons/inactiveitem.gif" HEIGHT="15" WIDTH="70" BORDER="0" ALT="Denotes Inactive users">
+				          	<img src="../images/buttons/inactiveitem.gif" HEIGHT="15" WIDTH="70" BORDER="0" ALT="Denotes Inactive users" >
 			          	</td>
-									<td width="30%">&nbsp;</td>
 									<td noWrap align="right">
 										Page <?php echo $p ?> of <?php echo $intpagecount ?>
 							
@@ -391,9 +391,7 @@ function onSubmitForm(sButton) {
 									</td>
 								</tr>
 							</table>
-            </td>	
-          </tr>
-        </table>
+            </div>
         <input type="hidden" name="sm" value="strSubmitted">
         <input type="hidden" name="pg" value="<?php echo $p ?>">
         <input type="hidden" name="sf" value="<?php echo $strSortField ?>">

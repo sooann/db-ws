@@ -26,8 +26,10 @@
   <link rel="stylesheet" href="../css/jquery.dd.css">
 
 	<!-- Google WebFonts -->
+	<!-- 
 	<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
-    
+  -->
+  
 	<script src="../js/libs/modernizr-1.7.min.js"></script>
 	
 	<script language="javascript" src="../js/cordlife.js"></script>
