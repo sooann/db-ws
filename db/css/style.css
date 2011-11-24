@@ -887,7 +887,8 @@ input.small, textarea.small { width:25%; }
 input.medium, textarea.medium { width:50%; }
 input.large, textarea.large { width:75%; }
 input.full, textarea.full { width:97%; }
-input[type=text], input[type=password], textarea, select { padding:7px 6px 5px; }
+input[type=text], input[type=password], textarea { padding:7px 6px 5px; }
+select { padding:5px 6px 5px; }
 input[type="radio"] { vertical-align:text-bottom; }
 input[type="checkbox"] { vertical-align:bottom; }
 input[type="checkbox"], input[type="radio"] {

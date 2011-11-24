@@ -16,19 +16,6 @@ $(function () {
 	// jQuery Tipsy
 	$('[rel=tooltip], #main-nav span, .loader').tipsy({gravity:'s', fade:true}); // Tooltip Gravity Orientation: n | w | e | s
 
-	// Check all checkboxes
-	$('.check-all').click(
-		function(){
-			$(this).parents('form').find('input:checkbox').attr('checked', $(this).is(':checked'));
-			if ($(this).is(':checked')) {
-				$(this).parents('form').find('input:checkbox').parents('tbody').find('tr').addClass("selected");
-			} else {
-				$(this).parents('form').find('input:checkbox').parents('tbody').find('tr').removeClass("selected");
-			}
-			
-		}
-	)
-
 	// IE7 doesn't support :disabled
 	$('.ie7').find(':disabled').addClass('disabled');
 
@@ -42,10 +29,43 @@ $(function () {
 			return false;
 		}
 	);
+	
 	$('#main-nav li a.no-submenu, #main-nav li li a').click(
 		function () {
 			window.location.href=(this.href); // Open link instead of a sub menu
 			return false;
+		}
+	);
+	
+	//listing table js
+	$('.check-all').click(
+		function(){
+			$(this).parents('form').find('input:checkbox').attr('checked', $(this).is(':checked'));
+			if ($(this).is(':checked')) {
+				$(this).parents('form').find('input:checkbox').parents('tbody').find('tr').addClass("selected");
+			} else {
+				$(this).parents('form').find('input:checkbox').parents('tbody').find('tr').removeClass("selected");
+			}
+			
+		}
+	)
+	
+	$('.td-chkbox .checkbox').click (
+		function() {
+			if ($(this).is(':checked')) {
+				$(this).parents('tr').addClass("selected");
+			} else {
+				$(this).parents('tr').removeClass("selected");
+			}
+			
+			var isAllChecked=true;
+			
+			for (var index=0; index<$(this).parents('tr').length; index++){
+				if (!$(this).parents('tr').eq(index).find('input:checkbox').attr('checked')) {
+					isAllChecked=false;
+				}
+			}
+			$('.check-all').attr('checked',isAllChecked);
 		}
 	);
 

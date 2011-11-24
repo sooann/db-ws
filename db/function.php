@@ -1,5 +1,13 @@
 <?php
-	
+
+	function isEmailValid($strEmail){     
+	  if (ereg("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)+$", $strEmail)) {
+	    return true;
+	  } else {
+		  return false;
+		}
+	}
+ 	
 	function addErrorNotification ($strText) {
 		echo '<div class="notification error">';
 		echo '<a href="#" class="close-notification" title="Hide Notification" rel="tooltip">x</a>';

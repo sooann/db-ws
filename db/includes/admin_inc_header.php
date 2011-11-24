@@ -50,7 +50,14 @@
 				<?php } ?>
 		  }
 			
-		</script>
+	</script>
+	
+	<script src="../js/jquery/jquery-1.5.1.min.js"></script>
+	<script src="../js/libs/selectivizr.js"></script>
+	<script src="../js/jquery/jquery.tipsy.js"></script>
+	<script src="../js/jquery/excanvas.js"></script>
+  <script type="text/javascript" src="../js/jquery/jquery.dd.js"></script>
+	<script src="../js/script.js"></script>
     
 </head>
 
@@ -83,7 +90,7 @@
 				<ul>
 					<li><a class="button-link" href="#" title="Update Profile" rel="tooltip">Update Profile</a></li>
 					<li><a class="button-link" href="#" title="Change Password" rel="tooltip">Change Password</a></li>
-					<li><a class="button-link" href="logout.php" title="Logout" rel="tooltip">logout</a></li>
+					<li><a class="button-link" href="logout.php" title="Logout" rel="tooltip">Logout</a></li>
 				</ul>
 			</div>
 		</section>

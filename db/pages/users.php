@@ -299,7 +299,7 @@ function onSubmitForm(sButton) {
          $strTRClass="";
        }
 
-       echo '<tr class="disabled" >';
+       echo '<tr class="'.$strTRClass.'" >';
 
        echo '<td class="td-edit">';
 
@@ -419,7 +419,10 @@ function onSubmitForm(sButton) {
 <script language=javascript>
 <!--
   var frm = document.mainForm;
-//-->
+
+	//-->
+	// Check all checkboxes
+	
 </script>
 <?php
 	If ($blnDeleted) {

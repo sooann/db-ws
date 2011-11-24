@@ -95,6 +95,12 @@
 	<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
 	
 	<script src="../js/libs/modernizr-1.7.min.js"></script>
+	
+	<script src="../js/jquery/jquery-1.5.1.min.js"></script>
+	<script src="../js/libs/selectivizr.js"></script>
+	<script src="../js/jquery/jquery.tipsy.js"></script>
+	<script src="../js/login.js"></script>
+	
 </head>
 <body class="login">
 	<section role="main">
@@ -158,11 +164,10 @@
 	</section>
 
 	<!-- JS Libs at the end for faster loading -->
+	<!-- 
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
 	<script>!window.jQuery && document.write(unescape('%3Cscript src="../js/jquery/jquery-1.5.1.min.js"%3E%3C/script%3E'))</script>
-	<script src="../js/libs/selectivizr.js"></script>
-	<script src="../js/jquery/jquery.tipsy.js"></script>
-	<script src="../js/login.js"></script>
+	-->
 		
 </body>
 </html>

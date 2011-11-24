@@ -1,0 +1,61 @@
+@CHARSET "ISO-8859-1";
+
+.postform-container {
+	margin-top:0px;
+	padding-top:5px;
+	padding-bottom:0px;
+}
+
+#postform fieldset {
+	padding-bottom:12px;
+	border-width:3px;
+	padding-top:10px;
+	margin-bottom:13px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+	-webkit-border-radius:5px;
+}
+
+#postform div{	
+	padding-top:5px;
+	padding-bottom:5px;	
+}
+
+#postform label{
+	padding-top:7px;
+	float:left;
+	width:170px;
+	text-align:right;
+	font-weight:normal;
+	margin-right:5px;
+}
+
+#postform label em {
+	display:none;
+}
+
+#postform .mandatory label {
+	font-weight:bold;
+}
+
+#postform .mandatory label em {
+	font-weight:none;
+	display:inline;
+	color:#ff0000;
+	font-style:normal;
+	padding-right:3px;
+}
+
+#postform input:hover, #postform select:hover, #postform textarea:hover {
+	background-color:#FFFFA8;
+}
+
+#postform .error {
+	background: #F2D4CE url(../img/icons/icon_error.png) no-repeat right;
+	margin-right:20px;
+}
+
+#postform-action {
+	padding-top:5px;
+}
+

@@ -50,6 +50,10 @@
 	background-color:#D1D8FF;
 }
 
+.listingTable .disabled{
+	background-color:#FAE8CB;
+}
+
 .listingTable th img{
 	border:0px;
 	padding:0px;
@@ -78,7 +82,6 @@
 .listing-actions td:first-child {
 	padding-left:10px;
 	text-align:left;
-	
 }
 
 .listing-actions td:last-child {
