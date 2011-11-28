@@ -9,12 +9,6 @@
 	$strMainTable= "USERS";
 	$strMainTableId= "user_id";
 	
-	$headtags="";
-	$headtags .= '<link rel="stylesheet" type="text/css" media="all" href="../js/jscalendar-1.0/calendar-win2k-cold-1.css" title="win2k-cold-1" />';
-	$headtags .= '<script type="text/javascript" src="../js/jscalendar-1.0/calendar.js"></script>';
-	$headtags .= '<script type="text/javascript" src="../js/jscalendar-1.0/lang/calendar-en.js"></script>';
-	$headtags .= '<script type="text/javascript" src="../js/jscalendar-1.0/calendar-setup.js"></script>';	
-	
 	$strHeadTags = '<link rel="stylesheet" href="../css/postform.css">';
 	
 	$arrBreadCrumb = array(array("url"=>"users.php","name"=>"Users"));
@@ -154,7 +148,52 @@
   		}
   		
   		If (!$blnApplErr) {
-        $strSubmitted = "process";
+        
+        if ($strAction=="") {
+        	
+        	$node = new sqlNode();
+        	$node->table = $strMainTable;
+        	$node->push("text","NAME",$strName);
+        	$node->push("text","EMAIL",$strEmail);
+        	$node->push("text","PASSWORD",encrypt_password($strPassword));
+        	$node->push("int","ACTIVE",1);
+        	$node->push("int","CREATEDBY",$_SESSION["intUserURN"]);
+        	$node->push("date","CreatedDate",now());
+        	$user_id = $db->insert($node);
+        
+        	if ($user_id!=false) {
+	        	//header("Location: status.php?t=suc&a=" . $strAction . "&no=1&code=");
+	        	$strURL = "status.php?t=suc&a=" . $strAction;
+	        	redirect($strURL);
+        	} else {
+        		$blnApplErr=true;
+        		$blnDBErr=true;
+        	}
+        
+        } elseif ($strAction=="edit") {
+        	
+        	$node = new sqlNode();
+        	$node->table = $strMainTable;
+        	$node->push("text","NAME",$strName);
+        	$node->push("text","EMAIL",$strEmail);
+        	if ($strPassword!="") {
+        		$node->push("text","PASSWORD",encrypt_password($strPassword));
+        	}
+        	$node->push("int","MODIFIEDBY",$_SESSION["intUserURN"]);
+        	$node->push("date","MODIFIEDDATE",now());
+        	$node->where = "where ".$strMainTableId." = " . $intID;
+        	
+        	if ($db->update($node)) {
+	        	//header("Location: status.php?t=suc&a=" . $strAction . "&no=1&code=");
+	        	$strURL = "status.php?t=suc&a=" . $strAction;
+	        	redirect($strURL);
+        	} else {
+        		$blnApplErr=true;
+        		$blnDBErr=true;
+        	}
+        	
+        }
+        
       } else {
 	      If ($strAction == "") {
 	        $strPostScript = $strPostScript . "?id=" . $intID;
@@ -175,23 +214,28 @@
 <form action="<?php echo $strPostScript; ?>" method="POST" name="postform-container" class="postform-container">
 	<div id="form-notifications">
 	</div>
+	<script>
+		<?php If ($blnApplErr && $blnDBErr) { ?>
+			addNotification("Error", "Update Database. Message <?php echo $db->getErrorMessage(); ?> ");
+		<?php } ?>
+	</script>
 	<div id="postform">
 		<fieldset >
 			<legend><?php echo $strDisplayTerm ?> Properties</legend>
 			<div class="mandatory">
 				<label><em>*</em>Name</label>
-				<Input type="text" name="strName" size="40" maxlength="250" value="<?php echo $strName; ?>"  />
+				<Input type="text" name="strName" maxlength="250" value="<?php echo $strName; ?>"  />
 			</div>
 			<div class="mandatory">
 				<label><em>*</em>Email</label>
-				<Input type="text" name="strEmail" size="40" maxlength="250" value="<?php echo $strEmail; ?>" />
+				<Input type="text" name="strEmail" maxlength="250" value="<?php echo $strEmail; ?>" />
 				<script>
 					<?php If ($blnApplErr && $blnEmailEmpty) { ?>
-						addJNotification("Error",1,"strName","Please enter an Email address.");
+						addJNotification("Error",1,"strEmail","Please enter an Email address.");
 					<?php } elseif ($blnApplErr && $blnEmailinv) { ?>
-						addJNotification("Error",1,"strName","Please enter a valid Email address.");
+						addJNotification("Error",1,"strEmail","Please enter a valid Email address.");
 					<?php } elseif ($blnApplErr && $blnEmaildup) { ?>
-						addJNotification("Error",2,"strName","This Emaill address has been used. Please try again.");
+						addJNotification("Error",2,"strEmail","This Emaill address has been used. Please try again.");
 					<?php } ?>
 				</script>
 			</div>
@@ -200,21 +244,23 @@
 			<legend>Login Properties</legend>
 			<div <?php if ($strAction=="") echo 'class="mandatory"'; ?> >
 				<label><em>*</em>Password</label>
-				<Input type="text" name="$strPassword" size="40" maxlength="250" value="<?php echo $strPassword; ?>"  />
+				<Input type="text" name="$strPassword" maxlength="250" value="<?php echo $strPassword; ?>"  />
 				<script>
 					<?php If ($blnApplErr && $blnPassword) { ?>
-						addJNotification("Error",1,"strName","Please enter a Password.");
-					<?php } ?>
+						addJNotification("Error",1,"$strPassword","Please enter a Password.");
+					<?php } elseif ($blnApplErr && $blnPasswordinv) { ?>	
+						addJNotification("Error",2,"$strPassword","Your passwords do not match. Please try again.");
+					<?php }	?>
 				</script>
 			</div>
 			<div <?php if ($strAction=="") echo 'class="mandatory"'; ?> >
 				<label><em>*</em>Confirm Password</label>
-				<Input type="text" name="strConPassword" size="40" maxlength="250" value="<?php echo $strConPassword; ?>" />
+				<Input type="text" name="strConPassword" maxlength="250" value="<?php echo $strConPassword; ?>" />
 				<script>
 					<?php If ($blnApplErr && $blnConPassword) { ?>
-						addJNotification("Error",1,"strName","Please confirm your Password.");
+						addJNotification("Error",1,"strConPassword","Please confirm your Password.");
 					<?php } elseif ($blnApplErr && $blnPasswordinv) { ?>	
-						addJNotification("Error",2,"strName","Your passwords do not match. Please try again.");
+						addJNotification("Error",2,"strConPassword","Your passwords do not match. Please try again.");
 					<?php }	?>
 				</script>
 			</div>
@@ -229,77 +275,6 @@
 
 <?php 
 	include "../includes/admin_inc_footer.php";
-?>
-
-<?php } Elseif ($strSubmitted == "process") { 
-	
-	if ($strAction=="") {
-		
-		$mysql = new mysql();
-		$node = new sqlNode();
-		$node->table = "staffs";
-		$node->push("text","strFullName",$strFullName);
-		$node->push("text","strEmail",$strEmail);
-		$node->push("text","strPassword",encrypt_password($strPassword));
-		$node->push("int","country_id",$country_id);
-		
-		$node->push("date","dtDOB",$dtDOB);
-		$node->push("text","strHomeAddress",$strHomeAddress);
-		$node->push("text","strLocalAddress",$strLocalAddress);
-		$node->push("text","strCity",$strCity);
-		$node->push("text","strState",$strState);
-		$node->push("text","strMobileNo",$strMobileNo);
-		$node->push("text","strHomeTel",$strHomeTel);
-		$node->push("text","strRemarks",$strRemarks);
-		$node->push("text","dtDateJoined",$dtDateJoined);
-		$node->push("text","dtDateLeft",$dtDateLeft);
-		
-		$node->push("int","blnActive",1);
-		$node->push("int","intCreatedBy",$_SESSION["intUserURN"]);
-		$node->push("date","dtCreatedDate",date("Y-m-d H:i:s",time()));
-		
-		if(($results = $mysql->insert($node)) === false )
-					die($mysql->debugPrint());
-					
-		$intID = mysql_insert_id();
-		
-		//header("Location: status.php?t=suc&a=" . $strAction . "&no=1&code=");
-		$strURL = "status.php?t=suc&a=" . $strAction . "&no=1&code=";
-		redirect($strURL);
-		
-		
-	} elseif ($strAction=="edit") {
-		
-		$mysql = new mysql();
-		$node = new sqlNode();
-		$node->table = "staffs";
-		$node->push("text","strFullName",$strFullName);
-		$node->push("int","country_id",$country_id);
-		
-		$node->push("date","dtDOB",$dtDOB);
-		$node->push("text","strHomeAddress",$strHomeAddress);
-		$node->push("text","strLocalAddress",$strLocalAddress);
-		$node->push("text","strCity",$strCity);
-		$node->push("text","strState",$strState);
-		$node->push("text","strMobileNo",$strMobileNo);
-		$node->push("text","strHomeTel",$strHomeTel);
-		$node->push("text","strRemarks",$strRemarks);
-		$node->push("text","dtDateJoined",$dtDateJoined);
-		$node->push("text","dtDateLeft",$dtDateLeft);
-		
-		$node->push("int","intModifiedBy",$_SESSION["intUserURN"]);
-		$node->push("date","dtModifiedDate",date("Y-m-d H:i:s",time()));
-		$node->where = "where staff_id = " . $intID;
-		
-		if(($results = $mysql->update($node)) === false )
-		die($mysql->debugPrint());
-		
-		//header("Location: status.php?t=suc&a=" . $strAction . "&no=1&code=");
-		$strURL = "status.php?t=suc&a=" . $strAction . "&no=1&code=";
-		redirect($strURL);
-		
-	}
-	
 ?>
 	
 <?php } Elseif ($strSubmitted == "view") { ?>

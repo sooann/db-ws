@@ -84,6 +84,8 @@ class wArLeY_DBMS{
 	var $port;
 	var $database_type;
 	var $root_mdb;
+	var $exception = NULL;
+	var $exception_error = NULL;
 	
 	var $sql;	
 	var $con;
@@ -183,17 +185,27 @@ class wArLeY_DBMS{
 				die( "wrong server" );
 			}
 		} catch(PDOException $e) {
+			$this->exception = $e;
+			$this->exception_error = $e->getMessage();
 			echo "Error: ". $e->getMessage();
 			return false;
 		}		
 	}	
+	
+	function getErrorMessage() {
+		return $this->exception_error;
+	}
+	
+	function getError() {
+		return $this->exception;
+	}
 		
 	//Iterate over rows
-	function query($sql_statement, $orderby = null, $limit = null, $offset = null, $paramArray = null){		
-		if($this->con!=null){
+	function query($sql_statement, $orderby = NULL, $limit = NULL, $offset = NULL, $paramArray = NULL){		
+		if($this->con!=NULL){
 			try {
 				
-				if (!is_null($orderby) && !is_null($limit) && !is_null($offset)) {
+				if (!is_NULL($orderby) && !is_NULL($limit) && !is_NULL($offset)) {
 					if($this->database_type=="sqlsrv"||$this->database_type=="mssql"){
 						$sql_statement = "select * from (select row_number() over (order by ".$orderby.") as rownumber, * from (".$sql_statement.") as table1) as table1 where rownumber between $offset and ".($offset+$limit);
 					}
@@ -205,14 +217,16 @@ class wArLeY_DBMS{
 					$this->sql=$sql_statement;
 				}
 				$stmt = $this->con->prepare($this->sql);
-				if (!is_null($paramArray)) {
+				if (!is_NULL($paramArray)) {
 					$stmt->execute($paramArray);
 				} else {
 					$stmt->execute();
 				}
 				return $stmt; 
 				//return $this->con->query();
-			} catch(PDOException $e) {				
+			} catch(PDOException $e) {
+				$this->exception = $e;
+				$this->exception_error = $e->getMessage();
 				return false;
 			}
 		}
@@ -223,12 +237,14 @@ class wArLeY_DBMS{
 	
 	//Fetch the first row
 	private function query_first($sql_statement){
-		if($this->con!=null){
+		if($this->con!=NULL){
 			try {
 				$sttmnt = $this->con->prepare($sql_statement);
 				$sttmnt->execute();	
 				return $sttmnt->fetch();
 			} catch(PDOException $e) {
+				$this->exception = $e;
+				$this->exception_error = $e->getMessage();
 				return false;
 			}
 		}
@@ -239,12 +255,14 @@ class wArLeY_DBMS{
 	
 	//Select single table cell from first record
 	private function query_single($sql_statement){
-		if($this->con!=null){
+		if($this->con!=NULL){
 			try {
 				$sttmnt = $this->con->prepare($sql_statement);
 				$sttmnt->execute();	
 				return $sttmnt->fetchColumn();
 			} catch(PDOException $e) {
+				$this->exception = $e;
+				$this->exception_error = $e->getMessage();
 				return false;
 			}
 		}
@@ -255,7 +273,7 @@ class wArLeY_DBMS{
 	
 	//Return total records from query as integer
 	function rowcount(){
-		if($this->con!=null){
+		if($this->con!=NULL){
 			try {	
 				$rows = $this->con->query($this->sql);
 				$count = 0;
@@ -264,6 +282,8 @@ class wArLeY_DBMS{
 				}
 				return $count;
 			} catch(PDOException $e) {
+				$this->exception = $e;
+				$this->exception_error = $e->getMessage();
 				return -1;
 			}
 		}
@@ -276,7 +296,7 @@ class wArLeY_DBMS{
 	function columns($table){
 		$this->sql="Select * From $table";
 		
-		if($this->con!=null){
+		if($this->con!=NULL){
 			try {
 				$q = $this->con->query($this->sql);
 				$column = array();
@@ -285,6 +305,8 @@ class wArLeY_DBMS{
 				}			
 				return $column;
 			} catch(PDOException $e) {
+				$this->exception = $e;
+				$this->exception_error = $e->getMessage();
 				return false;
 			}
 		}
@@ -304,17 +326,18 @@ class wArLeY_DBMS{
 			$str .= implode(',',$col);
 			$str .= ' ) values ( ' . implode(',',$values) . ' )';
 			//$str = $str . ' ' . $sqlNode->where . ' ' . $sqlNode->orderby . ' ' . $sqlNode->limit;
-			if($this->con!=null){
+			if($this->con!=NULL){
 				try {
 					$this->con->exec($str);
 					$IdentityID = $this->con->lastInsertId();
 					$this->logSQL($str, $IdentityID);
 					return $IdentityID;
 				} catch(PDOException $e) {
-					die ($e->getMessage());
+					$this->exception = $e;
+					$this->exception_error = $e->getMessage();
 					return false;
 				}
-			}else 
+			} else 
 			return false;
 		}
 		else
@@ -331,16 +354,16 @@ class wArLeY_DBMS{
 			$str .= implode(',',$col);
 			$str .= ' where ' . $sqlNode->where ;
 			
-			if($this->con!=null && $sqlNode->where !=""){
+			if($this->con!=NULL && $sqlNode->where !=""){
 				try {
-					
 					$this->con->exec($str);
 					$this->logSQL($str, $sqlNode->where);
 				} catch(PDOException $e) {
-					die ($e->getMessage());
+					$this->exception = $e;
+					$this->exception_error = $e->getMessage();
 					return false;
 				}
-			}else
+			} else
 			return false;
 		}
 		else
@@ -350,13 +373,14 @@ class wArLeY_DBMS{
 	//Delete records from tables
 	function delete($table, $condition){
 		$count = 0;
-		if($this->con!=null && $condition!=""){
+		if($this->con!=NULL && $condition!=""){
 			try {
 				$count = $this->con->exec("delete from $table where $condition");
 				$this->logSQL("delete from $table where $condition");
 				return $count;
 			} catch(PDOException $e) {
-				die ($e->getMessage());
+				$this->exception = $e;
+				$this->exception_error = $e->getMessage();
 				return false;
 			}
 		}
@@ -370,7 +394,7 @@ class wArLeY_DBMS{
 		if (isset($_SESSION["intUserURN"])) {
 			$stmt->bindParam(1, $_SESSION["intUserURN"]);
 		} else {
-			$stmt->bindValue(1, null, PDO::PARAM_NULL);
+			$stmt->bindValue(1, NULL, PDO::PARAM_NULL);
 		}
 		$stmt->bindParam(2, $SQL_Statement);
 		$stmt->bindParam(3, $_SERVER['REQUEST_URI']);
@@ -400,16 +424,18 @@ class wArLeY_DBMS{
 			$sql_statement = "select $table_field from $db_table order by $table_field desc limit 1 offset 0";
 		}
 		
-		if($this->con!=null){
+		if($this->con!=NULL){
 			try {
 				$latest_value = 0;
 				$rows = $this->con->query($sql_statement);
 				foreach($rows as $row){
 					$latest_value = $row[$table_field];
 				}
-				$rows = null;
+				$rows = NULL;
 				return $latest_value;
 			} catch(PDOException $e) {
+				$this->exception = $e;
+				$this->exception_error = $e->getMessage();
 				return false;
 			}
 		}
@@ -443,11 +469,13 @@ class wArLeY_DBMS{
 			$sql_statement = "select relname as name from pg_stat_user_tables order by relname";
 		}
 		
-		if($this->con!=null){
+		if($this->con!=NULL){
 			try {
 				$this->sql=$sql_statement;
 				return $this->con->query($this->sql);			
 			} catch(PDOException $e) {
+				$this->exception = $e;
+				$this->exception_error = $e->getMessage();
 				return false;
 			}
 		}
@@ -479,11 +507,13 @@ class wArLeY_DBMS{
 			$sql_statement = "select datname as name from pg_database";
 		}
 		
-		if($this->con!=null){
+		if($this->con!=NULL){
 			try {
 				$this->sql=$sql_statement;
 				return $this->con->query($this->sql);			
 			} catch(PDOException $e) {
+				$this->exception = $e;
+				$this->exception_error = $e->getMessage();
 				return false;
 			}
 		}
@@ -495,7 +525,7 @@ class wArLeY_DBMS{
 	//Disconnect database
 	function disconnect(){
 		if($this->con){
-			$this->con = null;
+			$this->con = NULL;
 			return true;
 		}else{
 			return false;
