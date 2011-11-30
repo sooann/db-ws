@@ -90,6 +90,7 @@
 	<link rel="stylesheet" href="../css/style.css">
 	<link rel="stylesheet" href="../css/colors.css">
 	<link rel="stylesheet" href="../css/jquery.tipsy.css">
+	<link rel="stylesheet" href="../css/jquery.jqnotify.css">
 	
 	<!-- Google WebFonts -->
 	<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
@@ -99,6 +100,7 @@
 	<script src="../js/jquery/jquery-1.5.1.min.js"></script>
 	<script src="../js/libs/selectivizr.js"></script>
 	<script src="../js/jquery/jquery.tipsy.js"></script>
+	<script src="../js/jquery/jquery.jqnotify.js"></script>
 	<script src="../js/login.js"></script>
 	
 </head>
@@ -137,13 +139,13 @@
 								<label>Login</label>
 							</dt>
 							<dd>
-								<input type="text" class="large " name="strUsername" size="30" maxlength="250" value="<?php echo $strUsername; ?>" >
+								<input type="text" class="large " name="strUsername" maxlength="250" value="<?php echo $strUsername; ?>" >
 							</dd>
 							<dt>
 								<label>Password</label>
 							</dt>
 							<dd>
-								<input type="password" class="large " name="strPassword" size="30" maxlength="250" value="<?php echo "$strPassword"; ?>" >
+								<input type="password" class="large " name="strPassword" maxlength="250" value="<?php echo "$strPassword"; ?>" >
 							</dd>
 						</dl>
 					</fieldset>

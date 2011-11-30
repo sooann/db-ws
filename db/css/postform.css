@@ -55,6 +55,10 @@
 	margin-right:20px;
 }
 
+#postform input:focus.error, #postform select:focus.error, #postform textarea:focus.error  {
+	background-color:#E6E6E6;
+}
+
 #postform-action {
 	padding-top:5px;
 }

@@ -109,15 +109,15 @@
   		}
   		
   		if ($strAction=="") {
+  			
   			if ($strEmail=="") {
 	  			$blnApplErr=true;
 	  			$blnEmailEmpty=true;	
 	  		} else {
-	  			if (isEmailValid($strEmail)==0) {
+	  			if (!isEmailValid($strEmail)) {
 		  			$blnApplErr=true;
 		  			$blnEmailinv=true;	
 		  		} else {
-		  			
 		  			$SQLQuery="select * from ".$strMainTable." where EMAIL like ?";
 		  			if (is_array($db->query($SQLQuery,NULL,NULL,NULL,array($strEmail))->fetch())) {
 		  				$blnApplErr=true;
@@ -140,11 +140,6 @@
   		if ($strConPassword!=$strPassword && $strPassword!="") {
   			$blnApplErr=true;
   			$blnPasswordinv=true;
-  		}
-  		
-  		if ($country_id=="") {
-  			$blnApplErr=true;
-  			$blncountry=true;	
   		}
   		
   		If (!$blnApplErr) {
@@ -212,8 +207,6 @@
 	include "../includes/admin_inc_header.php";
 ?>
 <form action="<?php echo $strPostScript; ?>" method="POST" name="postform-container" class="postform-container">
-	<div id="form-notifications">
-	</div>
 	<script>
 		<?php If ($blnApplErr && $blnDBErr) { ?>
 			addNotification("Error", "Update Database. Message <?php echo $db->getErrorMessage(); ?> ");
@@ -224,18 +217,23 @@
 			<legend><?php echo $strDisplayTerm ?> Properties</legend>
 			<div class="mandatory">
 				<label><em>*</em>Name</label>
-				<Input type="text" name="strName" maxlength="250" value="<?php echo $strName; ?>"  />
+				<Input type="text" name="strName" maxlength="250" value="<?php echo $strName; ?>" />
+				<script>
+					<?php If ($blnApplErr && $blnName) { ?>
+						$('input[name="strName"]').jqnotify({type:"Error", level:1, text:"Please enter a Name."});
+						<?php } ?>
+				</script>
 			</div>
 			<div class="mandatory">
 				<label><em>*</em>Email</label>
-				<Input type="text" name="strEmail" maxlength="250" value="<?php echo $strEmail; ?>" />
+				<Input type="text" name="strEmail" maxlength="250" value="<?php echo $strEmail; ?>"  />
 				<script>
 					<?php If ($blnApplErr && $blnEmailEmpty) { ?>
-						addJNotification("Error",1,"strEmail","Please enter an Email address.");
+						$('input[name="strEmail"]').jqnotify({type:"Error", level:1, text:"Please enter an Email address."});
 					<?php } elseif ($blnApplErr && $blnEmailinv) { ?>
-						addJNotification("Error",1,"strEmail","Please enter a valid Email address.");
+						$('input[name="strEmail"]').jqnotify({type:"Error", level:1, text:"Please enter a valid Email address."});
 					<?php } elseif ($blnApplErr && $blnEmaildup) { ?>
-						addJNotification("Error",2,"strEmail","This Emaill address has been used. Please try again.");
+						$('input[name="strEmail"]').jqnotify({type:"Error", level:2, text:"This Emaill address has been used."});
 					<?php } ?>
 				</script>
 			</div>
@@ -244,23 +242,23 @@
 			<legend>Login Properties</legend>
 			<div <?php if ($strAction=="") echo 'class="mandatory"'; ?> >
 				<label><em>*</em>Password</label>
-				<Input type="text" name="$strPassword" maxlength="250" value="<?php echo $strPassword; ?>"  />
+				<Input type="password" name="strPassword" maxlength="250" value="<?php echo $strPassword; ?>"  />
 				<script>
 					<?php If ($blnApplErr && $blnPassword) { ?>
-						addJNotification("Error",1,"$strPassword","Please enter a Password.");
+						$('input[name="strPassword"]').jqnotify({type:"Error", level:1, text:"Please enter a Password."});
 					<?php } elseif ($blnApplErr && $blnPasswordinv) { ?>	
-						addJNotification("Error",2,"$strPassword","Your passwords do not match. Please try again.");
+						$('input[name="strPassword"]').jqnotify({type:"Error", level:2, text:"Your passwords do not match."});
 					<?php }	?>
 				</script>
 			</div>
 			<div <?php if ($strAction=="") echo 'class="mandatory"'; ?> >
 				<label><em>*</em>Confirm Password</label>
-				<Input type="text" name="strConPassword" maxlength="250" value="<?php echo $strConPassword; ?>" />
+				<Input type="password" name="strConPassword" maxlength="250" value="<?php echo $strConPassword; ?>" />
 				<script>
 					<?php If ($blnApplErr && $blnConPassword) { ?>
-						addJNotification("Error",1,"strConPassword","Please confirm your Password.");
+						$('input[name="strConPassword"]').jqnotify({type:"Error", level:1, text:"Please confirm your Password."});
 					<?php } elseif ($blnApplErr && $blnPasswordinv) { ?>	
-						addJNotification("Error",2,"strConPassword","Your passwords do not match. Please try again.");
+						$('input[name="strConPassword"]').jqnotify({type:"Error", level:2, text:"Your passwords do not match."});
 					<?php }	?>
 				</script>
 			</div>

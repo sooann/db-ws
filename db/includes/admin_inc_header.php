@@ -24,6 +24,7 @@
 	<link rel="stylesheet" href="../css/colors.css">
 	<link rel="stylesheet" href="../css/jquery.tipsy.css">
   <link rel="stylesheet" href="../css/jquery.dd.css">
+  <link rel="stylesheet" href="../css/jquery.jqnotify.css">
 
 	<!-- Google WebFonts -->
 	<!-- 
@@ -56,7 +57,8 @@
 	<script src="../js/libs/selectivizr.js"></script>
 	<script src="../js/jquery/jquery.tipsy.js"></script>
 	<script src="../js/jquery/excanvas.js"></script>
-  <script type="text/javascript" src="../js/jquery/jquery.dd.js"></script>
+  <script src="../js/jquery/jquery.dd.js"></script>
+  <script src="../js/jquery/jquery.jqnotify.js"></script>
 	<script src="../js/script.js"></script>
     
 </head>
@@ -189,3 +191,4 @@
                 			echo "<h5>".$strPageDescription."</h5>";
                 		} 
                 	?>
+                	<div id="notification-container"></div>

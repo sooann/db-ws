@@ -1,7 +1,7 @@
 <?php
 
 	function isEmailValid($strEmail){     
-	  if (ereg("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)+$", $strEmail)) {
+	  if (preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/",$strEmail)) {
 	    return true;
 	  } else {
 		  return false;
