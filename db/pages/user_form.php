@@ -8,6 +8,7 @@
 	$strDisplayTermPural = "Users";
 	$strMainTable= "USERS";
 	$strMainTableId= "user_id";
+	$strStatusPage = "users.php";
 	
 	$strHeadTags = '<link rel="stylesheet" href="../css/postform.css">';
 	
@@ -158,7 +159,7 @@
         
         	if ($user_id!=false) {
 	        	//header("Location: status.php?t=suc&a=" . $strAction . "&no=1&code=");
-	        	$strURL = "status.php?t=suc&a=" . $strAction;
+	        	$strURL = $strStatusPage."?t=suc&a=" . $strAction;
 	        	redirect($strURL);
         	} else {
         		$blnApplErr=true;
@@ -180,7 +181,7 @@
         	
         	if ($db->update($node)) {
 	        	//header("Location: status.php?t=suc&a=" . $strAction . "&no=1&code=");
-	        	$strURL = "status.php?t=suc&a=" . $strAction;
+	        	$strURL = $strStatusPage."?t=suc&a=" . $strAction;
 	        	redirect($strURL);
         	} else {
         		$blnApplErr=true;

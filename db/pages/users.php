@@ -46,6 +46,10 @@
 	$intFilterField = (trim($_REQUEST["iff"]) != "") ? trim($_REQUEST["iff"]) : trim($_REQUEST["intFilterField"]);  
 	$strFilterValue = (trim($_REQUEST["sfv"]) != "") ? trim($_REQUEST["sfv"]) : trim($_REQUEST["strFilterValue"]);
 
+	// ##### Form Status Display #####
+	$strSubmitted   = trim($_REQUEST["t"]);
+	$strSubmitted   = trim($_REQUEST["a"]);
+	
 	// ##### Process QueryString/Form Variables #####
 	If (!is_numeric($strSortField) || $strSortField == "") { $strSortField   = 0; }
 	If (!is_numeric($strSortOrder) || $strSortOrder == "") { $strSortOrder   = 0; }
@@ -113,11 +117,11 @@
 
 			//##### Commit transaction #####
 			//header("Location: " . $strPostScript . "?p=" . Trim($_POST['pg']) . "&del=1" . $strQueryString);
-			redirect($strPostScript . "?p=" . Trim($_POST['pg']) . "&del=1" . $strQueryString);
+			redirect($strPostScript . "?p=" . Trim($_POST['pg']) . "&t=suc&a=del" . $strQueryString);
       
     } Else {
     	//header("Location: " . $strPostScript . "?p=" . Trim($_POST['pg']) . $strQueryString);
-    	redirect($strPostScript . "?p=" . Trim($_POST['pg']) . $strQueryString);
+    	redirect($strPostScript . "?p=" . Trim($_POST['pg']) . "&t=fail&a=del" . $strQueryString);
     }
   } ElseIf ($strAction == "Enable/Disable") {
   	
@@ -154,10 +158,10 @@
       }
 
 			//header("Location: " . $strPostScript . "?p=" . Trim($_POST['pg']) . "&upd=1" . $strQueryString);
-			redirect($strPostScript . "?p=" . Trim($_POST['pg']) . "&upd=1" . $strQueryString);
+			redirect($strPostScript . "?p=" . Trim($_POST['pg']) . "t=suc&a=upd" . $strQueryString);
 		} Else {
       //header("Location: " . $strPostScript . "?p=" . Trim($_POST['pg']) . $strQueryString);
-      redirect($strPostScript . "?p=" . Trim($_POST['pg']) . $strQueryString);
+      redirect($strPostScript . "?p=" . Trim($_POST['pg']) . "t=fail&a=upd" . $strQueryString);
     }
   }
 
@@ -416,14 +420,6 @@ function onSubmitForm(sButton) {
 
 <?php // ##### End of web form #################################################
 ?>
-<script language=javascript>
-<!--
-  var frm = document.mainForm;
-
-	//-->
-	// Check all checkboxes
-	
-</script>
 <?php
 	If ($blnDeleted) {
 		echo '<script language="JavaScript">';
