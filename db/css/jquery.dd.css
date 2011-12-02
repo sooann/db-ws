@@ -13,7 +13,7 @@
 	padding:3px;
 	text-indent:0;
 	cursor:default;
-	overflow:hidden;
+	overflow-x:visible;
 	height:19px;
 }
 .dd .ddTitle span.arrow {

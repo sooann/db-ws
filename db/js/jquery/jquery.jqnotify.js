@@ -27,6 +27,9 @@
         		temptitle=opts.text;
         	}
         	$(this).attr("title",temptitle);
+        	
+        	//show invalid image
+        	$(this).parent('div').find("img").css('display','inline');
         });
         
 	};

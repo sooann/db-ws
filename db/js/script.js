@@ -60,8 +60,9 @@ $(function () {
 			
 			var isAllChecked=true;
 			
-			for (var index=0; index<$(this).parents('tr').length; index++){
-				if (!$(this).parents('tr').eq(index).find('input:checkbox').attr('checked')) {
+			var $p = $(this).parents('tbody').find('tr');
+			for (var index=0; index<$p.length; index++){
+				if (!$p.eq(index).find('input:checkbox').is(':checked')) {
 					isAllChecked=false;
 				}
 			}

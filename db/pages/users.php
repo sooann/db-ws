@@ -33,6 +33,10 @@
 	// ##### Request QueryString Variables #####
 	$blnDeleted = trim($_GET['del']);
 	$blnActivated  = trim($_GET['upd']);
+	
+	// ##### Status Return #####
+	$returnStatus = trim($_GET['t']);
+	$returnAction = trim($_GET['a']);
 
 	//' ##### Request Form Variables #####
 	$strAction = trim($_POST['submit']);
@@ -41,14 +45,10 @@
 	$strSortField   = trim($_REQUEST["sf"]);
 	$strSortOrder   = trim($_REQUEST["so"]);
 	$intPageSize    = trim($_REQUEST["ps"]);
-	$strDeleteIds   = trim($_POST["strDeleteIds"]);
+	$strDeleteIds   = $_POST["strDeleteIds"];
 	
 	$intFilterField = (trim($_REQUEST["iff"]) != "") ? trim($_REQUEST["iff"]) : trim($_REQUEST["intFilterField"]);  
 	$strFilterValue = (trim($_REQUEST["sfv"]) != "") ? trim($_REQUEST["sfv"]) : trim($_REQUEST["strFilterValue"]);
-
-	// ##### Form Status Display #####
-	$strSubmitted   = trim($_REQUEST["t"]);
-	$strSubmitted   = trim($_REQUEST["a"]);
 	
 	// ##### Process QueryString/Form Variables #####
 	If (!is_numeric($strSortField) || $strSortField == "") { $strSortField   = 0; }
@@ -57,7 +57,7 @@
 	If (!is_numeric($intAccessId) || $intAccessId == "")   { $intAccessId    = 0; }
 
   // ##### Formulate new querystring #####
-  $strQueryString = "&a=" . $intAccessId . "&sf=" . $strSortField . "&so=" . $strSortOrder . "&ps=" . $intPageSize . "&sm=" . $strSubmitted . "&iff=" . $intFilterField . "&sfv=" . $strFilterValue;
+  $strQueryString = "&sf=" . $strSortField . "&so=" . $strSortOrder . "&ps=" . $intPageSize . "&sm=" . $strSubmitted . "&iff=" . $intFilterField . "&sfv=" . $strFilterValue;
 
   $strSortUrl   = $strPostScript . "?ps=" . $intPageSize . "&sm=" . $strSubmitted . "&iff=" . $intFilterField . "&sfv=" . $strFilterValue ;
   
@@ -80,26 +80,13 @@
     }
   }
 
-  // ##### Display activated/deleted status? #####
-  If ($blnDeleted == "1") {
-    $blnDeleted = True;
-  }  Else {
-    $blnDeleted = False;
-  }
-
-  If ($blnActivated == "1") {
-    $blnActivated = True;
-  } Else {
-    $blnActivated = False;
-  }
-
   // ##### Delete/Activate/Deactivate records #####
 
   If ($strAction == "Delete") {
 
     // ##### Delete records #####
-    If ($strDeleteIds != "") {
-      $arrDeleteIds   = split(', ', $strDeleteIds);
+    If (isset($strDeleteIds)) {
+      $arrDeleteIds   = explode(', ', $strDeleteIds);
 
 		  // ##### Begin Transaction #####
 
@@ -126,11 +113,12 @@
   } ElseIf ($strAction == "Enable/Disable") {
   	
     // ##### Activate/Deactivate records #####
-    If ($strDeleteIds != "") {
+  	  	
+    If (isset($strDeleteIds)) {
 
       // ##### Begin Transaction #####
-		  $arrDeleteIds   = split(", ", $strDeleteIds);
-	
+		  $arrDeleteIds   = $strDeleteIds;
+		  
       $SQLQuery = "SELECT ".$strMainTableId.", ACTIVE FROM ".$strMainTable." WHERE ";
       for ($i=0;$i<=UBound($arrDeleteIds);$i++) {
         $SQLQuery = $SQLQuery . $strMainTableId." = " . $arrDeleteIds[$i] . " ";
@@ -138,7 +126,7 @@
           $SQLQuery = $SQLQuery . "OR ";
         }
       }
-
+      
       $stmt = $db->query($SQLQuery);
 
       while ($row = $stmt->fetch()) {
@@ -156,12 +144,12 @@
         $db->update($node);
         
       }
-
+      
 			//header("Location: " . $strPostScript . "?p=" . Trim($_POST['pg']) . "&upd=1" . $strQueryString);
-			redirect($strPostScript . "?p=" . Trim($_POST['pg']) . "t=suc&a=upd" . $strQueryString);
+			redirect($strPostScript . "?p=" . Trim($_POST['pg']) . "&t=suc&a=upd" . $strQueryString);
 		} Else {
       //header("Location: " . $strPostScript . "?p=" . Trim($_POST['pg']) . $strQueryString);
-      redirect($strPostScript . "?p=" . Trim($_POST['pg']) . "t=fail&a=upd" . $strQueryString);
+      redirect($strPostScript . "?p=" . Trim($_POST['pg']) . "&t=fail&a=upd" . $strQueryString);
     }
   }
 
@@ -182,7 +170,7 @@
 		
 		if ($strFilterDataType == "text") {
 				$SQLQuery .= "Where " . $fldFilterValue[$intFilterField] ." like ? ";
-				$paramArray = array($strFilterValue); 
+				$paramArray = array('%'.$strFilterValue.'%'); 
 		}
 		
 		if ($strFilterDataType == "int" || $strFilterDataType == "dbl") {
@@ -218,8 +206,33 @@
    
 ?>
 
-
 <script language="javascript" >
+
+<?php
+	switch ($returnStatus) {
+		case 'suc':
+			switch ($returnAction) {
+				case (is_null($returnAction) || $returnAction=='new'):
+					echo ('addNotification("Success", "New '.$strDisplayTerm.' has been created.");');
+					break;
+				case ($returnAction=='edit'):
+					echo ('addNotification("Success", "Existing '.$strDisplayTerm.' has been updated.");');
+					break;
+				case ($returnAction=='upd'):
+					echo ('addNotification("Success", "The '.$strDisplayTerm.' that you have selected has been Enabled/Disabled.");');
+					break;
+			}
+			break;
+		case 'fail':
+			switch ($returnAction) {
+				case ($returnAction=='del' || $returnAction=='upd'):
+					echo ('addNotification("Error", "The '.$strDisplayTerm.'(s) that you selected has not been updated.");');
+					break;
+			}
+			break;
+	}
+?>
+
 <!--
 function onSubmitForm(sButton) {
   if (sButton=="Enable/Disable")
@@ -313,7 +326,7 @@ function onSubmitForm(sButton) {
        echo '<td class="td-chkbox" >';
 
        // ##### Cannot DELETE Master User Account #####
-       echo '<input class="checkbox" type="checkbox" name="strDeleteIds" value="' . Trim($ps[$strMainTableId]) .'" title="Select or de-select this item">';
+       echo '<input class="checkbox" type="checkbox" name="strDeleteIds[]" value="' . Trim($ps[$strMainTableId]) .'" title="Select or de-select this item">';
 
        echo "</td>";
 
@@ -420,19 +433,7 @@ function onSubmitForm(sButton) {
 
 <?php // ##### End of web form #################################################
 ?>
-<?php
-	If ($blnDeleted) {
-		echo '<script language="JavaScript">';
-		echo 'window.alert("The '.$strDisplayTerm.'(s) that you selected have been deleted.");';
-		echo '</script>';
-	} ElseIf ($blnActivated) {
-		echo '<script language="JavaScript">';
-		echo 'window.alert("The '.$strDisplayTerm.'(s) that you selected have been Enabled/Disabled.");';
-		echo '</script>';
-	}
-
-	include "../includes/admin_inc_footer.php";
-?>
+<?php	include "../includes/admin_inc_footer.php"; ?>
 
 
 

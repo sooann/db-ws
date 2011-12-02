@@ -34,6 +34,13 @@
 	display:none;
 }
 
+#postform img {
+	border:0px;
+	margin-left:5px;
+	vertical-align:middle;
+	display:none;
+}
+
 #postform .mandatory label {
 	font-weight:bold;
 }
@@ -51,8 +58,8 @@
 }
 
 #postform .error {
-	background: #F2D4CE url(../img/icons/icon_error.png) no-repeat right;
-	margin-right:20px;
+	/* background: #F2D4CE url(../img/icons/icon_error.png) no-repeat right; */
+	background-color: #F2D4CE; 
 }
 
 #postform input:focus.error, #postform select:focus.error, #postform textarea:focus.error  {

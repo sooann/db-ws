@@ -42,15 +42,15 @@
 	background-color:#F0F0F0;
 }
 
+.listingTable tbody tr.selected { 
+	background-color:#D1D8FF; 
+}
+
 .listingTable tbody tr:hover {
 	background-color:#FFFFA8;
 }
 
-.listingTable .selected{
-	background-color:#D1D8FF;
-}
-
-.listingTable .disabled{
+.listingTable tbody tr.disabled{
 	background-color:#FAE8CB;
 }
 

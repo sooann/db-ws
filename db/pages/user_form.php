@@ -218,7 +218,7 @@
 			<legend><?php echo $strDisplayTerm ?> Properties</legend>
 			<div class="mandatory">
 				<label><em>*</em>Name</label>
-				<Input type="text" name="strName" maxlength="250" value="<?php echo $strName; ?>" />
+				<Input type="text" name="strName" maxlength="250" value="<?php echo $strName; ?>" /><img src="../img/icons/icon_error.png" />
 				<script>
 					<?php If ($blnApplErr && $blnName) { ?>
 						$('input[name="strName"]').jqnotify({type:"Error", level:1, text:"Please enter a Name."});
@@ -227,7 +227,7 @@
 			</div>
 			<div class="mandatory">
 				<label><em>*</em>Email</label>
-				<Input type="text" name="strEmail" maxlength="250" value="<?php echo $strEmail; ?>"  />
+				<Input type="text" name="strEmail" maxlength="250" value="<?php echo $strEmail; ?>"  /><img src="../img/icons/icon_error.png" />
 				<script>
 					<?php If ($blnApplErr && $blnEmailEmpty) { ?>
 						$('input[name="strEmail"]').jqnotify({type:"Error", level:1, text:"Please enter an Email address."});
@@ -243,7 +243,7 @@
 			<legend>Login Properties</legend>
 			<div <?php if ($strAction=="") echo 'class="mandatory"'; ?> >
 				<label><em>*</em>Password</label>
-				<Input type="password" name="strPassword" maxlength="250" value="<?php echo $strPassword; ?>"  />
+				<Input type="password" name="strPassword" maxlength="250" value="<?php echo $strPassword; ?>"  /><img src="../img/icons/icon_error.png" />
 				<script>
 					<?php If ($blnApplErr && $blnPassword) { ?>
 						$('input[name="strPassword"]').jqnotify({type:"Error", level:1, text:"Please enter a Password."});
@@ -254,7 +254,7 @@
 			</div>
 			<div <?php if ($strAction=="") echo 'class="mandatory"'; ?> >
 				<label><em>*</em>Confirm Password</label>
-				<Input type="password" name="strConPassword" maxlength="250" value="<?php echo $strConPassword; ?>" />
+				<Input type="password" name="strConPassword" maxlength="250" value="<?php echo $strConPassword; ?>" /><img src="../img/icons/icon_error.png" />
 				<script>
 					<?php If ($blnApplErr && $blnConPassword) { ?>
 						$('input[name="strConPassword"]').jqnotify({type:"Error", level:1, text:"Please confirm your Password."});
