@@ -78,4 +78,18 @@ $(function () {
 		}
 	);
 	
+	// set function for dropdown db select
+	$('.showDataBase').change(
+		function () {
+			if ($(this).val()=="showALL") {
+				//redirect to database listing page
+				window.location.href="databases.php";
+			} else {
+				//redirect to database tables listing page
+				window.location.href="dbtables.php?id="+this.val();
+			}
+		}
+	);
+	
+	
 });

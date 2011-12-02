@@ -56,6 +56,7 @@
   			$strName = $row['NAME'];
 				$strEmail = $row['EMAIL'];
 				
+				$blnActive = $row['ACTIVE'];
 				$dtCreatedDate = $row['CREATEDDATE'];
 				$dtModifiedDate = $row['MODIFIEDDATE'];
 				$strCreatedByName = $row['CreatedByName'];
@@ -277,6 +278,57 @@
 ?>
 	
 <?php } Elseif ($strSubmitted == "view") { ?>
+
+<?php include "../includes/admin_inc_header.php"; ?>
+
+<form action="<?php echo $strPostScript; ?>" method="POST" name="postform-container" class="postform-container" >
+	<div id="viewform">
+		<article>
+			<header>
+				<h4><?php echo $strDisplayTerm ?> Properties</h4>
+			</header>
+			<section>
+				<div>
+					<label>Name</label><span><?php echo $strName; ?></span>
+				</div>
+				<div>
+					<label>Email</label><span><?php echo $strEmail; ?></span>
+				</div>
+			</section>
+		</article>
+		<article>
+			<header>
+				<h4>Other Information</h4>
+			</header>
+			<section>
+				<div>
+					<label>Is <?php echo $strDisplayTerm; ?> Active?</label>
+					<span>
+						<?php
+							if ($blnActive==1) {
+								echo "Yes";
+							} else {
+								echo "No";
+							}
+						?>
+					</span>
+				</div>
+				<div>
+					<label>Created By</label><span><?php echo $strCreatedByName; ?></span>
+				</div>
+				<div>
+					<label>Modified By</label><span><?php echo $strModifiedByName; ?></span>
+				</div>
+			</section>
+		</article>
+	</div>
+	<div id="postform-action" >  
+		<input type="submit" class="button" Name="submit" value="Update">
+		<input type="button" class="button" value="Cancel" onclick="history.go(-1);">
+	</div>
+</form>
+
+<?php include "../includes/admin_inc_footer.php"; ?>
 
 <?php } ?>
 
