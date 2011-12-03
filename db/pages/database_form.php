@@ -4,11 +4,11 @@
 	require_once "../security_config.php";
 	require_once "../includes/password.php";
 	
-	$strDisplayTerm = "User";
-	$strDisplayTermPural = "Users";
-	$strMainTable= "USERS";
-	$strMainTableId= "user_id";
-	$strStatusPage = "users.php";
+	$strDisplayTerm = "Database";
+	$strDisplayTermPural = "Databases";
+	$strMainTable= "DATABASES";
+	$strMainTableId= "DATABASE_ID";
+	$strStatusPage = "databases.php";
 	
 	$strHeadTags = '<link rel="stylesheet" href="../css/postform.css">';
 	
@@ -53,10 +53,9 @@
   		
   		if (is_array($row)) {
   			
+  			$strLabel = $row['LABEL'];
   			$strName = $row['NAME'];
-				$strEmail = $row['EMAIL'];
 				
-				$blnActive = $row['ACTIVE'];
 				$dtCreatedDate = $row['CREATEDDATE'];
 				$dtModifiedDate = $row['MODIFIEDDATE'];
 				$strCreatedByName = $row['CreatedByName'];
@@ -99,69 +98,57 @@
   } else {
   	
   	If ($strAction == "edit" ||  $strAction == "") {
-  		$strName = trim($_POST['strName']);
-  		$strEmail = trim($_POST['strEmail']);
   		
-  		$strPassword = trim($_POST['strPassword']);
-  		$strConPassword = trim($_POST['strConPassword']);	
+  		$strLabel = trim($_POST['strLabel']);
+  		$strName = trim($_POST['strName']);
   		
   		if ($strName=="") {
   			$blnApplErr=true;
   			$blnName=true;	
+  		} else {
+  			//check if name is unique
+  			$SQLQuery="select " . $strMainTable . ".* from " . $strMainTable . " where NAME like ? and ".$strMainTableId." <> ? ";
+  			if (is_array($db->query($SQLQuery,NULL,NULL,NULL,array($strName, $intID))->fetch())) {
+  				$blnApplErr=true;
+  				$blnNameInv=true;
+  			}
   		}
   		
-  		if ($strAction=="") {
-  			
-  			if ($strEmail=="") {
-	  			$blnApplErr=true;
-	  			$blnEmailEmpty=true;	
-	  		} else {
-	  			if (!isEmailValid($strEmail)) {
-		  			$blnApplErr=true;
-		  			$blnEmailinv=true;	
-		  		} else {
-		  			$SQLQuery="select * from ".$strMainTable." where EMAIL like ? and ".$strMainTableId." <> ? ";
-		  			if (is_array($db->query($SQLQuery,NULL,NULL,NULL,array($strEmail,$intID))->fetch())) {
-		  				$blnApplErr=true;
-		  				$blnEmaildup=true;	
-		  			}
-		  		}
-	  		}
-  		
-  			if($strPassword=="") {
-  				$blnApplErr=true;
-  				$blnPassword=true;	
-  			}
-  			if($strConPassword=="") {
-  				$blnApplErr=true;
-  				$blnConPassword=true;	
-  			}
-  			
-  		}
-  		
-  		if ($strConPassword!=$strPassword && $strPassword!="") {
+  		if ($strLabel=="") {
   			$blnApplErr=true;
-  			$blnPasswordinv=true;
+  			$blnLabel=true;
+  		} else {
+  			//check if label is unique  			
+  			$SQLQuery="select " . $strMainTable . ".* from " . $strMainTable . " where LABEL like ? and ".$strMainTableId." <> ? ";
+  			if (is_array($db->query($SQLQuery,NULL,NULL,NULL,array($strLabel, $intID))->fetch())) {
+  				$blnApplErr=true;
+  				$blnLabelInv=true;
+  			}
   		}
-  		
+  		  		
   		If (!$blnApplErr) {
         
         if ($strAction=="") {
         	
-        	$node = new sqlNode();
-        	$node->table = $strMainTable;
-        	$node->push("text","NAME",$strName);
-        	$node->push("text","EMAIL",$strEmail);
-        	$node->push("text","PASSWORD",encrypt_password($strPassword));
-        	$node->push("int","ACTIVE",1);
-        	$node->push("int","CREATEDBY",$_SESSION["intUserURN"]);
-        	$node->push("date","CreatedDate",now());
-        	$user_id = $db->insert($node);
-        
-        	if ($user_id!=false) {
-	        	//header("Location: status.php?t=suc&a=" . $strAction . "&no=1&code=");
-	        	$strURL = $strStatusPage."?t=suc&a=" . $strAction;
-	        	redirect($strURL);
+        	//add database to db server
+        	if ($db->createDB($strName)) {
+        		//add record to system
+	        	$node = new sqlNode();
+	        	$node->table = $strMainTable;
+	        	$node->push("text","NAME",$strName);
+	        	$node->push("text","LABEL",$strLabel);
+	        	$node->push("int","CREATEDBY",$_SESSION["intUserURN"]);
+	        	$node->push("date","CreatedDate",now());
+	        	$user_id = $db->insert($node);
+	        
+	        	if ($user_id!=false) {
+		        	//header("Location: status.php?t=suc&a=" . $strAction . "&no=1&code=");
+		        	$strURL = $strStatusPage."?t=suc&a=" . $strAction;
+		        	redirect($strURL);
+	        	} else {
+	        		$blnApplErr=true;
+	        		$blnDBErr=true;
+	        	}
         	} else {
         		$blnApplErr=true;
         		$blnDBErr=true;
@@ -169,26 +156,34 @@
         
         } elseif ($strAction=="edit") {
         	
-        	$node = new sqlNode();
-        	$node->table = $strMainTable;
-        	$node->push("text","NAME",$strName);
-        	$node->push("text","EMAIL",$strEmail);
-        	if ($strPassword!="") {
-        		$node->push("text","PASSWORD",encrypt_password($strPassword));
-        	}
-        	$node->push("int","MODIFIEDBY",$_SESSION["intUserURN"]);
-        	$node->push("date","MODIFIEDDATE",now());
-        	$node->where = $strMainTableId." = " . $intID;
+        	//find old database name
+        	$SQLQuery="select " . $strMainTable . ".* from " . $strMainTable . " where " . $strMainTable . "." . $strMainTableId . "= ?";
+        	$row = $db->query($SQLQuery,NULL,NULL,NULL,array($intID))->fetch();
         	
-        	if ($db->update($node)) {
-	        	//header("Location: status.php?t=suc&a=" . $strAction . "&no=1&code=");
-	        	$strURL = $strStatusPage."?t=suc&a=" . $strAction;
-	        	redirect($strURL);
+        	//update database to db server
+        	if ($db->updateDBName($row['NAME'], $strName)) {
+	        	
+	        	//add record to system
+	        	$node = new sqlNode();
+	        	$node->table = $strMainTable;
+	        	$node->push("text","NAME",$strName);
+	        	$node->push("text","LABEL",$strLabel);
+	        	$node->push("int","MODIFIEDBY",$_SESSION["intUserURN"]);
+	        	$node->push("date","MODIFIEDDATE",now());
+	        	$node->where = $strMainTableId." = " . $intID;
+	        	
+	        	if ($db->update($node)) {
+		        	//header("Location: status.php?t=suc&a=" . $strAction . "&no=1&code=");
+		        	$strURL = $strStatusPage."?t=suc&a=" . $strAction;
+		        	redirect($strURL);
+	        	} else {
+	        		$blnApplErr=true;
+	        		$blnDBErr=true;
+	        	}
         	} else {
         		$blnApplErr=true;
         		$blnDBErr=true;
         	}
-        	
         }
         
         If ($strAction == "") {
@@ -224,50 +219,25 @@
 		<fieldset >
 			<legend><?php echo $strDisplayTerm ?> Properties</legend>
 			<div class="mandatory">
-				<label><em>*</em>Name</label>
-				<Input type="text" name="strName" maxlength="250" value="<?php echo $strName; ?>" /><img src="../img/icons/icon_error.png" />
+				<label><em>*</em>Label</label>
+				<Input type="text" name="strLabel" maxlength="250" value="<?php echo $strLabel; ?>" /><img src="../img/icons/icon_error.png" />
 				<script>
-					<?php If ($blnApplErr && $blnName) { ?>
-						$('input[name="strName"]').jqnotify({type:"Error", level:1, text:"Please enter a Name."});
-						<?php } ?>
-				</script>
-			</div>
-			<div class="mandatory">
-				<label><em>*</em>Email</label>
-				<Input type="text" name="strEmail" maxlength="250" value="<?php echo $strEmail; ?>"  /><img src="../img/icons/icon_error.png" />
-				<script>
-					<?php If ($blnApplErr && $blnEmailEmpty) { ?>
-						$('input[name="strEmail"]').jqnotify({type:"Error", level:1, text:"Please enter an Email address."});
-					<?php } elseif ($blnApplErr && $blnEmailinv) { ?>
-						$('input[name="strEmail"]').jqnotify({type:"Error", level:1, text:"Please enter a valid Email address."});
-					<?php } elseif ($blnApplErr && $blnEmaildup) { ?>
-						$('input[name="strEmail"]').jqnotify({type:"Error", level:2, text:"This Emaill address has been used."});
+					<?php If ($blnApplErr && $blnLabel) { ?>
+						$('input[name="strLabel"]').jqnotify({type:"Error", level:1, text:"Please enter a Label."});
+					<?php } elseif ($blnApplErr && $blnLabelInv) { ?>
+						$('input[name="strLabel"]').jqnotify({type:"Error", level:2, text:"Label Exist in System. Labels cannot be re-used."});
 					<?php } ?>
 				</script>
 			</div>
-		</fieldset>
-		<fieldset>
-			<legend>Login Properties</legend>
-			<div <?php if ($strAction=="") echo 'class="mandatory"'; ?> >
-				<label><em>*</em>Password</label>
-				<Input type="password" name="strPassword" maxlength="250" value="<?php echo $strPassword; ?>"  /><img src="../img/icons/icon_error.png" />
+			<div class="mandatory">
+				<label><em>*</em>Name</label>
+				<Input type="text" name="strName" maxlength="250" value="<?php echo $strName; ?>"  /><img src="../img/icons/icon_error.png" />
 				<script>
-					<?php If ($blnApplErr && $blnPassword) { ?>
-						$('input[name="strPassword"]').jqnotify({type:"Error", level:1, text:"Please enter a Password."});
-					<?php } elseif ($blnApplErr && $blnPasswordinv) { ?>	
-						$('input[name="strPassword"]').jqnotify({type:"Error", level:2, text:"Your passwords do not match."});
-					<?php }	?>
-				</script>
-			</div>
-			<div <?php if ($strAction=="") echo 'class="mandatory"'; ?> >
-				<label><em>*</em>Confirm Password</label>
-				<Input type="password" name="strConPassword" maxlength="250" value="<?php echo $strConPassword; ?>" /><img src="../img/icons/icon_error.png" />
-				<script>
-					<?php If ($blnApplErr && $blnConPassword) { ?>
-						$('input[name="strConPassword"]').jqnotify({type:"Error", level:1, text:"Please confirm your Password."});
-					<?php } elseif ($blnApplErr && $blnPasswordinv) { ?>	
-						$('input[name="strConPassword"]').jqnotify({type:"Error", level:2, text:"Your passwords do not match."});
-					<?php }	?>
+					<?php If ($blnApplErr && $blnName) { ?>
+						$('input[name="strName"]').jqnotify({type:"Error", level:1, text:"Please enter a Name."});
+					<?php } elseif ($blnApplErr && $blnNameInv) { ?>
+						$('input[name="strName"]').jqnotify({type:"Error", level:2, text:"Name Exist in System. Names cannot be re-used."});
+					<?php } ?>
 				</script>
 			</div>
 		</fieldset>
@@ -295,10 +265,10 @@
 			</header>
 			<section>
 				<div>
-					<label>Name</label><span><?php echo $strName; ?></span>
+					<label>Label</label><span><?php echo $strLabel; ?></span>
 				</div>
 				<div>
-					<label>Email</label><span><?php echo $strEmail; ?></span>
+					<label>Name</label><span><?php echo $strName; ?></span>
 				</div>
 			</section>
 		</article>

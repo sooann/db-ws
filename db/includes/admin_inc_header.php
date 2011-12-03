@@ -119,7 +119,7 @@
 						?>
             <select name="showDataBase" class="showDataBase" >
             	<option value="">Select a Database</option>
-            	<option value="showALL">(Show All Databases)</option>
+            	<option value="showALL" <?php if ($strWebpage=="databases.php") echo "selected"; ?> >(Show All Databases)</option>
             	<?php
             		while ($showDBrow = $showDBstmt->fetch()) {
             			echo ('<option value="'.$showDBrow["DATABASE_ID"].'" ');

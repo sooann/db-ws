@@ -4,31 +4,31 @@
 	require_once "../security_config.php";
 
 	//##### Global Variables #####
-	$strDisplayTerm = "User";
-	$strDisplayTermPural = "Users";
-	$strMainTable= "USERS";
-	$strMainTableId= "USER_ID";
-	$strNewDisplayPage = "user_form.php";
+	$strDisplayTerm = "Database";
+	$strDisplayTermPural = "Databases";
+	$strMainTable= "DATABASES";
+	$strMainTableId= "DATABASE_ID";
+	$strNewDisplayPage = "database_form.php";
 	
 	$strBodyTitle   = "Manage ". $strDisplayTerm;
 	$strPageTitle  = $strBodyTitle;
 	
-	$arrBreadCrumb = array(array("url"=>"users.php","name"=>"Users"));
+	$arrBreadCrumb = array(array("url"=>"databases.php","name"=>"Databases"));
 	
 	$strHeadTags = '<link rel="stylesheet" href="../css/listing.css">';
 	
 	//##### Form variable declarations #####
-	$fldName      = array("Name","Email","Last Logged In", "Login Count","Created Date");
-	$fldValue     = array("NAME","EMAIL","dtlogindate", "intlogincount","CREATEDDATE");
-	$fldSort      = array("NAME","EMAIL","dtlogindate", "intlogincount","CREATEDDATE");
-	$fldSortName  = array("Name","Email","Last Logged In", "Login Count","Created Date");
+	$fldName      = array("Label","Name","No of Tables", "Created Date");
+	$fldValue     = array("LABEL","NAME","intTableCount", "CREATEDDATE");
+	$fldSort      = array("LABEL","NAME","intTableCount", "CREATEDDATE");
+	$fldSortName  = array("Label","Name","No of Tables", "Created Date");
 	$fldSortOrder = array("Ascending", "Descending");
 	$fldSortOVal  = array("ASC", "DESC");
 	$fldRecords   = array("20","50","100","200","500");
 	
-	$fldFilterName = array("Name","Email","Last Logged In", "Login Count","Created Date");
-	$fldFilterValue = array("NAME","EMAIL","dtlogindate", "intlogincount","CREATEDDATE");
-	$fldFilterDataType= array("text","text","date","int","date");
+	$fldFilterName = array("Label","Name","No of Tables", "Created Date");
+	$fldFilterValue = array("LABEL","NAME","intTableCount", "CREATEDDATE");
+	$fldFilterDataType= array("text","text","int","date");
 
 	// ##### Request QueryString Variables #####
 	$blnDeleted = trim($_GET['del']);
@@ -91,16 +91,13 @@
 		  // ##### Begin Transaction #####
 
       // ##### Delete administrators #####
-      $strSQLQuery="";
-      for ($i=0;$i<=count($arrDeleteIds)-1;$i++) {
-        $strSQLQuery = $strSQLQuery . $strMainTableId . " = " . $arrDeleteIds[$i] . " ";
-        If (UBound($arrDeleteIds) > 0 && UBound($arrDeleteIds) != $i) {
-        	$strSQLQuery = $strSQLQuery . "OR " ;
-        }
-      }
 
-		  //delete registrants
-      $db->delete($strMainTable, $strSQLQuery);
+		  //delete database
+      $SQLQuery = "SELECT * FROM ".$strMainTable." WHERE ".$strMainTableId." = ?";
+      $row = $db->query($SQLQuery,NULL,NULL,NULL,array($strDeleteIds))->fetch();
+      if ($db->deleteDB($row['NAME'])) {
+      	$db->delete($strMainTable, $strMainTableId." = ".$strDeleteIds);
+      }
 
 			//##### Commit transaction #####
 			//header("Location: " . $strPostScript . "?p=" . Trim($_POST['pg']) . "&del=1" . $strQueryString);
@@ -160,7 +157,7 @@
 	
 	$paramArray=null;
 	
-	$SQLQuery = "select ".$strMainTable.".*, table1.intcount as intlogincount, table2.dtlogindate from ".$strMainTable." left join (select count(*) as intcount, ".$strMainTableId." from loginlog group by user_id) as table1 on ".$strMainTable.".user_id = table1.user_id left outer join (select max(logindate) as dtlogindate,user_id from loginlog group by user_id ) as table2 on ".$strMainTable.".user_id = table2.user_id ";
+	$SQLQuery = "select * from ".$strMainTable." ";
 	
 	if ($strFilterValue!="") {
 		
@@ -220,6 +217,9 @@
 					break;
 				case ($returnAction=='upd'):
 					echo ('addNotification("Success", "The '.$strDisplayTerm.' that you have selected has been Enabled/Disabled.");');
+					break;
+				case ($returnAction=='del'):
+					echo ('addNotification("Success", "The '.$strDisplayTerm.' that you have selected has been Deleted.");');
 					break;
 			}
 			break;
@@ -294,7 +294,11 @@ function onSubmitForm(sButton) {
 	            	<thead>
 		              <tr >
 		                <th class="th-edit" >&nbsp;</th>
-		                <th class="th-chkbox" ><input class="check-all" type="checkbox" name="allboxes" title="Select or de-select all items" ></th>
+		                <th class="th-chkbox" >
+		                	<!--
+		                	<input class="check-all" type="checkbox" name="allboxes" title="Select or de-select all items" >
+		                	-->
+		                </th>
 
 <?php
 		 // ##### Show column header #####
@@ -308,6 +312,7 @@ function onSubmitForm(sButton) {
 <?php
      While ($ps = $stmt->fetch() ) {
 
+     	 /*
        If ((int)($ps['ACTIVE']) == 0) {
          $strColColor = "#FAE8CB";
          $strTRClass="disabled";
@@ -315,7 +320,8 @@ function onSubmitForm(sButton) {
          $strColColor = "#FFFFFF";
          $strTRClass="";
        }
-
+			 */
+     	
        echo '<tr class="'.$strTRClass.'" >';
 
        echo '<td class="td-edit">';
@@ -326,7 +332,7 @@ function onSubmitForm(sButton) {
        echo '<td class="td-chkbox" >';
 
        // ##### Cannot DELETE Master User Account #####
-       echo '<input class="checkbox" type="checkbox" name="strDeleteIds[]" value="' . Trim($ps[$strMainTableId]) .'" title="Select or de-select this item">';
+       echo '<input class="checkbox" type="radio" name="strDeleteIds" value="' . Trim($ps[$strMainTableId]) .'" title="Select or de-select this item">';
 
        echo "</td>";
 
@@ -354,10 +360,10 @@ function onSubmitForm(sButton) {
 								<tr>
 									<td>
 			          		<input type="button" class="button" Name="submit" value="Create New <?php echo $strDisplayTerm; ?>" onclick="parent.location='<?php echo $strNewDisplayPage; ?>'">
+			          		<!-- 
 				          	<input type="submit" class="button" Name="submit" value="Enable/Disable" onclick="return onSubmitForm('Enable/Disable');">
-				          	<!--
-				          	<input type="submit" class="button" Name="submit" value="Delete"  onclick="return onSubmitForm('Delete');">
 				          	-->
+				          	<input type="submit" class="button" Name="submit" value="Delete"  onclick="return onSubmitForm('Delete');">
 				          	<img src="../images/buttons/inactiveitem.gif" HEIGHT="15" WIDTH="70" BORDER="0" ALT="Denotes Inactive users" >
 			          	</td>
 									<td noWrap align="right">

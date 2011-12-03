@@ -918,7 +918,7 @@ th, td {
 }
 th { padding:10px 0; }
 th { font-size:116%; }
-table input[type="checkbox"] {
+table input[type="checkbox"], table input[type="radio"] {
 	margin:0 6px;
 	position:static;
 }

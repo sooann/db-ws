@@ -15,7 +15,7 @@
 	cursor:default;
 	overflow-x:visible;
 	height:19px;
-	font-size:90%;
+	font-size:80%;
 }
 .dd .ddTitle span.arrow {
 	background:url(../img/msdropdown/dd_arrow.gif) no-repeat 0 0; float:right; display:inline-block;width:16px; height:16px; cursor:pointer; 

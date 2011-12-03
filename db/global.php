@@ -19,6 +19,10 @@
 	
 	$strPostScript = $_SERVER['SCRIPT_NAME'];
 	global $strPostScript;
+	
+	$strWebpage = explode("/", $_SERVER['SCRIPT_NAME']);
+	$strWebpage = $strWebpage[Ubound($strWebpage)];
+	global $strWebpage;
 
 	session_start();
 	session_cache_expire(30);

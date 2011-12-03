@@ -315,6 +315,69 @@ class wArLeY_DBMS{
 		}
 	}
 	
+	//create database
+	function createDB($dbName){
+		if ($dbName!="") {
+			$str = 'create database '.$dbName;
+			if($this->con!=NULL){
+				try {
+					$this->con->exec($str);
+					$this->logSQL($str);
+					return TRUE;
+				} catch(PDOException $e) {
+					$this->exception = $e;
+					$this->exception_error = $e->getMessage();
+					return false;
+				}
+			} else
+			return false;
+		} else {
+			return false;
+		}
+	}
+	
+	//delete database
+	function deleteDB($dbName) {
+		if ($dbName!="") {
+			$str = 'drop database '.$dbName;
+			if($this->con!=NULL){
+				try {
+					$this->con->exec($str);
+					$this->logSQL($str);
+					return TRUE;
+				} catch(PDOException $e) {
+					$this->exception = $e;
+					$this->exception_error = $e->getMessage();
+					return false;
+				}
+			} else
+			return false;
+		} else {
+			return false;
+		}
+	}
+	
+	//alter database name
+	function updateDBName($oldName, $newName) {
+		if ($oldName!="" && $newName!="") {
+			$str = 'alter database '.$oldName.' Modify Name = '.$newName;
+			if($this->con!=NULL){
+				try {
+					$this->con->exec($str);
+					$this->logSQL($str);
+					return TRUE;
+				} catch(PDOException $e) {
+					$this->exception = $e;
+					$this->exception_error = $e->getMessage();
+					return false;
+				}
+			} else
+			return false;
+		} else {
+			return false;
+		}
+	}
+	
 	//Insert and get newly created id
 	function insert($sqlNode){
 		if(count($sqlNode->items) > 0){
@@ -358,9 +421,11 @@ class wArLeY_DBMS{
 				try {
 					$this->con->exec($str);
 					$this->logSQL($str, $sqlNode->where);
+					return true;
 				} catch(PDOException $e) {
 					$this->exception = $e;
 					$this->exception_error = $e->getMessage();
+					die ($e->getMessage());
 					return false;
 				}
 			} else
@@ -389,7 +454,7 @@ class wArLeY_DBMS{
 		}
 	}
 	
-	private function logSQL ($SQL_Statement, $RecordID) {		
+	private function logSQL ($SQL_Statement, $RecordID=NULL) {		
 		$stmt = $this->con->prepare("insert into sqlaudit(user_id,SQLStatement,PageURL,RecordId,CreatedDate) values (?,?,?,?,?)");
 		if (isset($_SESSION["intUserURN"])) {
 			$stmt->bindParam(1, $_SESSION["intUserURN"]);
@@ -398,7 +463,11 @@ class wArLeY_DBMS{
 		}
 		$stmt->bindParam(2, $SQL_Statement);
 		$stmt->bindParam(3, $_SERVER['REQUEST_URI']);
-		$stmt->bindParam(4, $RecordID);
+		if ($RecordID!=NULL) {
+			$stmt->bindParam(4, $RecordID);
+		} else {
+			$stmt->bindValue(4, NULL, PDO::PARAM_NULL);
+		}
 		$stmt->bindParam(5, now());
 		$stmt->execute();
 	}

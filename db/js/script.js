@@ -86,7 +86,7 @@ $(function () {
 				window.location.href="databases.php";
 			} else {
 				//redirect to database tables listing page
-				window.location.href="dbtables.php?id="+this.val();
+				window.location.href="dbtables.php?id="+$(this).val();
 			}
 		}
 	);
