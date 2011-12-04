@@ -339,7 +339,7 @@ function onSubmitForm(sButton) {
 			 for ($i=0;$i<=UBound($fldName);$i++) {
          echo "<td>";
          if ($i==0) {
-         	 echo '<a class="default" href="' . $strNewDisplayPage . '?a=view&id=' . trim($ps[$strMainTableId]) . '" onmouseover="window.status=\'View this '. $strDisplayTerm . '\\\'s details\'; return true" onmouseout="window.status=\'' . $strPageTitle .'\'; return true" title="View this '. $strDisplayTerm . '\'s details" >' . $ps[$fldValue[$i]] . '</a>';
+         	 echo '<a class="default" href="dbtables.php?&id=' . trim($ps[$strMainTableId]) . '" onmouseover="window.status=\'View this '. $strDisplayTerm . '\\\'s details\'; return true" onmouseout="window.status=\'' . $strPageTitle .'\'; return true" title="View this '. $strDisplayTerm . '\'s details" >' . $ps[$fldValue[$i]] . '</a>';
          } elseif (is_null($ps[$fldValue[$i]])) {
        	 	 echo "-";
        	 } Elseif ($ps[$fldValue[$i]]=="") {
