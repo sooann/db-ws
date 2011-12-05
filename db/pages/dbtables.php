@@ -34,6 +34,12 @@
 	$blnDeleted = trim($_GET['del']);
 	$blnActivated  = trim($_GET['upd']);
 	
+	//##### check for database ID ####
+	$showDatabaseID = trim($_GET['did']);
+	if ($showDatabaseID == "") {
+		redirect("../databases.php");
+	}
+	
 	// ##### Status Return #####
 	$returnStatus = trim($_GET['t']);
 	$returnAction = trim($_GET['a']);
@@ -57,9 +63,9 @@
 	If (!is_numeric($intAccessId) || $intAccessId == "")   { $intAccessId    = 0; }
 
   // ##### Formulate new querystring #####
-  $strQueryString = "&sf=" . $strSortField . "&so=" . $strSortOrder . "&ps=" . $intPageSize . "&sm=" . $strSubmitted . "&iff=" . $intFilterField . "&sfv=" . $strFilterValue;
+  $strQueryString = "&sf=" . $strSortField . "&so=" . $strSortOrder . "&ps=" . $intPageSize . "&sm=" . $strSubmitted . "&iff=" . $intFilterField . "&sfv=" . $strFilterValue . "&did=" . $showDatabaseID;
 
-  $strSortUrl   = $strPostScript . "?ps=" . $intPageSize . "&sm=" . $strSubmitted . "&iff=" . $intFilterField . "&sfv=" . $strFilterValue ;
+  $strSortUrl   = $strPostScript . "?ps=" . $intPageSize . "&sm=" . $strSubmitted . "&iff=" . $intFilterField . "&sfv=" . $strFilterValue . "&did=" . $showDatabaseID;
   
   $fldSortUrl   = array($strSortUrl . "&sf=0", $strSortUrl . "&sf=1", $strSortUrl . "&sf=2", $strSortUrl . "&sf=3", $strSortUrl . "&sf=4", $strSortUrl . "&sf=5", $strSortUrl . "&sf=6", $strSortUrl . "&sf=7");
   $strSortImg = array("", "", "", "");
@@ -339,7 +345,7 @@ function onSubmitForm(sButton) {
 			 for ($i=0;$i<=UBound($fldName);$i++) {
          echo "<td>";
          if ($i==0) {
-         	 echo '<a class="default" href="dbtables.php?&did=' . trim($ps[$strMainTableId]) . '" onmouseover="window.status=\'View this '. $strDisplayTerm . '\\\'s details\'; return true" onmouseout="window.status=\'' . $strPageTitle .'\'; return true" title="View this '. $strDisplayTerm . '\'s details" >' . $ps[$fldValue[$i]] . '</a>';
+         	 echo '<a class="default" href="dbtables.php?&id=' . trim($ps[$strMainTableId]) . '" onmouseover="window.status=\'View this '. $strDisplayTerm . '\\\'s details\'; return true" onmouseout="window.status=\'' . $strPageTitle .'\'; return true" title="View this '. $strDisplayTerm . '\'s details" >' . $ps[$fldValue[$i]] . '</a>';
          } elseif (is_null($ps[$fldValue[$i]])) {
        	 	 echo "-";
        	 } Elseif ($ps[$fldValue[$i]]=="") {

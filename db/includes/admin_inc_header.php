@@ -123,7 +123,7 @@
             	<?php
             		while ($showDBrow = $showDBstmt->fetch()) {
             			echo ('<option value="'.$showDBrow["DATABASE_ID"].'" ');
-            			if ($_SESSION["showDATABASE_ID"] == $showDBrow["DATABASE_ID"] ) {
+            			if ($showDatabaseID == $showDBrow["DATABASE_ID"] ) {
             				echo "selected";
             			}
             			echo " >".$showDBrow["LABEL"]."</option>";
